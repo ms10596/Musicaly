@@ -1,10 +1,10 @@
-import pygame
+import sqlite3
 
-import time
-
-pygame.init()
-
-pygame.mixer.music.load("1.mp3")
-pygame.mixer.music.play()
-# pygame.mixer.music.pause()
-time.sleep(1000)
+qry = open("musicaly").read()
+# print(qry)
+conn = sqlite3.connect('musicaly.db')
+# conn.executescript(qry)
+# conn.execute("""Insert into Artist(id, name, dob, band_id) VALUES (1, 'sayed', '1/4/5', 1)""")
+# conn.commit()
+s = conn.execute("""SELECT * FROM Artist;""")
+print(s.fetchall()[0][0])
