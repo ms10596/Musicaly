@@ -14,6 +14,8 @@ class Band:
         conn = sqlite3.connect('musicaly.db')
         conn.execute("""INSERT INTO Band VALUES(?, ?, ?)""", (self.id, name, band_artist_id))
         conn.commit()
+
+
 if __name__ == '__main__':
     x = Band(0)
     x.save("mshro3")
