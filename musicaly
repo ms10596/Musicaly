@@ -1,99 +1,85 @@
-SET FOREIGN_KEY_CHECKS = 0;
-DROP TABLE IF EXISTS `Artist`;
-DROP TABLE IF EXISTS `Song`;
-DROP TABLE IF EXISTS `Band`;
-DROP TABLE IF EXISTS `Album`;
-DROP TABLE IF EXISTS `Playlist`;
-DROP TABLE IF EXISTS `Artist_Song`;
-DROP TABLE IF EXISTS `Genre`;
-DROP TABLE IF EXISTS `Band_Song`;
-DROP TABLE IF EXISTS `Genre_Song`;
-DROP TABLE IF EXISTS `Playlist_Song`;
-DROP TABLE IF EXISTS `Band_Artist`;
-SET FOREIGN_KEY_CHECKS = 1;
-
 CREATE TABLE `Artist` (
-    `id` int NOT NULL,
-    `name` text NOT NULL,
-    `dob` date NOT NULL,
-    `band_id` int NOT NULL,
+    `id` int  ,
+    `name` text  ,
+    `dob` date  ,
+    `band_id` int  ,
     PRIMARY KEY (`id`)
 );
 
 CREATE TABLE `Song` (
-    `id` int NOT NULL,
-    `name` text NOT NULL,
-    `release_date` date NOT NULL,
-    `lyrics` text NOT NULL,
-    `length` time NOT NULL,
-    `artist_song_id` int NOT NULL,
-    `band_song_id` int NOT NULL,
-    `album_id` int NOT NULL,
-    `genre_song_id` int NOT NULL,
+    `id` int  ,
+    `name` text  ,
+    `release_date` date  ,
+    `lyrics` text  ,
+    `length` time  ,
+    `artist_song_id` int  ,
+    `band_song_id` int  ,
+    `album_id` int  ,
+    `genre_song_id` int  ,
     PRIMARY KEY (`id`)
 );
 
 CREATE TABLE `Band` (
-    `id` int NOT NULL,
-    `name` text NOT NULL,
-    `band_artist_id` int NOT NULL,
+    `id` int  ,
+    `name` text  ,
+    `band_artist_id` int  ,
     PRIMARY KEY (`id`)
 );
 
 CREATE TABLE `Album` (
-    `id` int NOT NULL,
-    `title` text NOT NULL,
-    `band_id` int NOT NULL,
-    `songs_no` int NOT NULL,
-    `album_song_id` int NOT NULL,
+    `id` int  ,
+    `title` text  ,
+    `band_id` int  ,
+    `songs_no` int  ,
+    `album_song_id` int  ,
     PRIMARY KEY (`id`)
 );
 
 CREATE TABLE `Playlist` (
-    `id` int NOT NULL,
-    `name` text NOT NULL,
-    `description` text NOT NULL,
-    `playlist_song_id` int NOT NULL,
+    `id` int  ,
+    `name` text  ,
+    `description` text  ,
+    `playlist_song_id` int  ,
     PRIMARY KEY (`id`)
 );
 
 CREATE TABLE `Artist_Song` (
-    `id` int NOT NULL,
-    `artist_id` int NOT NULL,
-    `song_id` int NOT NULL,
+    `id` int  ,
+    `artist_id` int  ,
+    `song_id` int  ,
     PRIMARY KEY (`id`)
 );
 
 CREATE TABLE `Genre` (
-    `id` int NOT NULL,
-    `Name` text NOT NULL,
+    `id` int  ,
+    `Name` text  ,
     PRIMARY KEY (`id`)
 );
 
 CREATE TABLE `Band_Song` (
-    `id` int NOT NULL,
-    `band_id` int NOT NULL,
-    `song_id` int NOT NULL,
+    `id` int  ,
+    `band_id` int  ,
+    `song_id` int  ,
     PRIMARY KEY (`id`)
 );
 
 CREATE TABLE `Genre_Song` (
-    `id` int NOT NULL,
-    `genre_id` int NOT NULL,
-    `song_id` int NOT NULL,
+    `id` int  ,
+    `genre_id` int  ,
+    `song_id` int  ,
     PRIMARY KEY (`id`)
 );
 
 CREATE TABLE `Playlist_Song` (
-    `id` int NOT NULL,
-    `playlist_id` int NOT NULL,
-    `song_id` int NOT NULL,
+    `id` int  ,
+    `playlist_id` int  ,
+    `song_id` int  ,
     PRIMARY KEY (`id`)
 );
 
 CREATE TABLE `Band_Artist` (
-    `id` int NOT NULL,
-    `band_id` int NOT NULL,
-    `artist_id` int NOT NULL,
+    `id` int  ,
+    `band_id` int  ,
+    `artist_id` int  ,
     PRIMARY KEY (`id`)
 );
