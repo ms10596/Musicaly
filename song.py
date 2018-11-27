@@ -19,7 +19,7 @@ class Song:
 
     def load_song(self):
         conn = sqlite3.connect('musicaly.db')
-        s = conn.execute("""SELECT * FROM Song where id =0 """)
+        s = conn.execute("SELECT * FROM Song where id = {}".format(self.id))
         print(s.fetchall())
 
     def save_song(self):
