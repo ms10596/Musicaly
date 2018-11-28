@@ -37,11 +37,10 @@ class Song:
         self.album_id = result[7]
         self.genre_song_id = result[8]
 
-    def save_song(self, name="", release_date="", lyrics="", length="", artist_song_id="", band_song_id="", album_id="",
-                  genre_song_id=""):
+    def save_song(self, name="", release_date="", lyrics="", length="", album=""):
         conn = sqlite3.connect('../db/musicaly.db')
         conn.execute("""INSERT INTO Song values(?, ?, ?, ?, ?, ?, ?, ?, ?)""", (
-            self.id, name, release_date, lyrics, length, artist_song_id, band_song_id, album_id, genre_song_id))
+            self.id, name, release_date, lyrics, length, album))
         conn.commit()
 
 
