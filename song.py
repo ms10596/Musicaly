@@ -4,25 +4,16 @@ import sqlite3
 
 
 class Song:
-    def __init__(self, id):
-        self.id = id
+    def __init__(self):
+        self.id = None
         self.name = None
         self.release_date = None
         self.lyrics = None
         self.length = None
-        self.artist_song_id = None
-        self.band_song_id = None
-        self.album_id = None
-        self.genre_song_id = None
-        # pygame.init()
-        # pygame.mixer.music.load(self.name + '.mp3')
-
-    def play(self):
-        pygame.mixer.music.play()
-        time.sleep(1000)
-
-    def pause(self):
-        pygame.mixer.music.pause()
+        self.artist_id = None
+        self.ft_id = None
+        self.artist_type = None
+        self.ft_type = None
 
     def load_song(self):
         conn = sqlite3.connect('db/musicaly.db')
@@ -39,8 +30,8 @@ class Song:
 
     def save_song(self, name="", release_date="", lyrics="", length="", album=""):
         conn = sqlite3.connect('../db/musicaly.db')
-        conn.execute("""INSERT INTO Song values(?, ?, ?, ?, ?, ?, ?, ?, ?)""", (
-            self.id, name, release_date, lyrics, length, album))
+        params = (name, release_date, lyrics, length, album)
+        conn.execute("INSERT INTO Song (name, release_date, lyrics, length, album) VALUES (?, ?, ?, ?, ?)", params)
         conn.commit()
 
 
