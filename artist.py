@@ -11,7 +11,7 @@ class Artist:
         conn = sqlite3.connect('db/musicaly.db')
         s = conn.execute("""SELECT * FROM Artist where id ={} """.format(self.id))
         result = s.fetchall()
-        print(result)
+        # print(result)
         if len(result) == 0:
             return "not found"
         self.name = result[0][1]

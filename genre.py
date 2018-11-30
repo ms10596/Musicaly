@@ -17,8 +17,10 @@ class Genre:
         conn.execute("""INSERT INTO Genre VALUES(?, ?)""", (self.id, name))
         conn.commit()
 
+    def __str__(self):
+        return self.name
+
 
 if __name__ == '__main__':
-
     g2 = Genre(2)
     g2.save("arabic")
