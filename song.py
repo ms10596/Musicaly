@@ -21,10 +21,7 @@ class Song:
         self.release_date = result[2]
         self.lyrics = result[3]
         self.length = result[4]
-        self.artist_song_id = result[5]
-        self.band_song_id = result[6]
-        self.album_id = result[7]
-        self.genre_song_id = result[8]
+        self.album_id = result[5]
 
     def save_song(self, name="", release_date="", lyrics="", length="", album=""):
         conn = sqlite3.connect('db/musicaly.db')
