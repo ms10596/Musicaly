@@ -1,107 +1,60 @@
--- SET FOREIGN_KEY_CHECKS = 0;
-DROP TABLE IF EXISTS `Artist`;
-DROP TABLE IF EXISTS `Song`;
-DROP TABLE IF EXISTS `Band`;
-DROP TABLE IF EXISTS `Album`;
-DROP TABLE IF EXISTS `Playlist`;
-DROP TABLE IF EXISTS `Artist_Song`;
-DROP TABLE IF EXISTS `Genre`;
-DROP TABLE IF EXISTS `Band_Song`;
-DROP TABLE IF EXISTS `Genre_Song`;
-DROP TABLE IF EXISTS `Playlist_Song`;
-DROP TABLE IF EXISTS `Band_Artist`;
-DROP TABLE IF EXISTS `Album_Song`;
--- SET FOREIGN_KEY_CHECKS = 1;
-
-CREATE TABLE `Artist` (
-  `id`      int,
-  `name`    text,
-  `dob`     date,
-  `band_id` int,
-  PRIMARY KEY (`id`)
+CREATE TABLE IF NOT EXISTS Song(
+   ID            INTEGER PRIMARY KEY AUTOINCREMENT,
+   NAME          VARCHAR,
+   RELEASE_DATE  date,
+   LYRICS        VARCHAR,
+   LENGTH        time,
+   ALBUM         VARCHAR,
+   ARTIST_ID     INTEGER,
+   ARTIST_TYPE   VARCHAR,
+   FT_ID         INTEGER,
+   FT_TYPE       VARCHAR
 );
 
-CREATE TABLE `Song` (
-  `id`             int,
-  `name`           text,
-  `release_date`   date,
-  `lyrics`         text,
-  `length`         time,
-  `artist_song_id` int,
-  `band_song_id`   int,
-  `album_id`       int,
-  `genre_song_id`  int,
-  PRIMARY KEY (`id`)
+CREATE TABLE IF NOT EXISTS Artist(
+   ID            INTEGER PRIMARY KEY AUTOINCREMENT,
+   NAME          VARCHAR,
+   DOB           date
 );
 
-CREATE TABLE `Band` (
-  `id`             int,
-  `name`           text,
-  `band_artist_id` int,
-  PRIMARY KEY (`id`)
+CREATE TABLE IF NOT EXISTS Band(
+   ID            INTEGER PRIMARY KEY AUTOINCREMENT,
+   NAME          VARCHAR
 );
 
-CREATE TABLE `Album` (
-  `id`            int,
-  `title`         text,
-  `band_id`       int,
-  `songs_no`      int,
-  `album_song_id` int,
-  PRIMARY KEY (`id`)
+CREATE TABLE IF NOT EXISTS Band_Artist(
+   BAND_ID       INTEGER,
+   ARTIST_ID     INTEGER
 );
 
-CREATE TABLE `Playlist` (
-  `id`               int,
-  `name`             text,
-  `description`      text,
-  `playlist_song_id` int,
-  PRIMARY KEY (`id`)
+CREATE TABLE IF NOT EXISTS Album(
+   ID            INTEGER PRIMARY KEY AUTOINCREMENT,
+   TITLE         VARCHAR,
+   SONGS_NO      INTEGER
 );
 
-CREATE TABLE `Artist_Song` (
-  `id`        int,
-  `artist_id` int,
-  `song_id`   int,
-  PRIMARY KEY (`id`)
+CREATE TABLE IF NOT EXISTS Album_Song(
+   SONG_ID       INTEGER,
+   ALBUM_ID      INTEGER
 );
 
-CREATE TABLE `Genre` (
-  `id`   int,
-  `Name` text,
-  PRIMARY KEY (`id`)
+CREATE TABLE IF NOT EXISTS Playlist(
+   ID            INTEGER PRIMARY KEY AUTOINCREMENT,
+   NAME          VARCHAR,
+   DESCRIPTION   VARCHAR
 );
 
-CREATE TABLE `Band_Song` (
-  `id`      int,
-  `band_id` int,
-  `song_id` int,
-  PRIMARY KEY (`id`)
+CREATE TABLE IF NOT EXISTS Playlist_Song(
+   PLAYLIST_ID   INTEGER,
+   SONG_ID       INTEGER
 );
 
-CREATE TABLE `Genre_Song` (
-  `id`       int,
-  `genre_id` int,
-  `song_id`  int,
-  PRIMARY KEY (`id`)
+CREATE TABLE IF NOT EXISTS Genre(
+   ID            INTEGER PRIMARY KEY AUTOINCREMENT,
+   NAME          VARCHAR
 );
 
-CREATE TABLE `Playlist_Song` (
-  `id`          int,
-  `playlist_id` int,
-  `song_id`     int,
-  PRIMARY KEY (`id`)
-);
-
-CREATE TABLE `Band_Artist` (
-  `id`        int,
-  `band_id`   int,
-  `artist_id` int,
-  PRIMARY KEY (`id`)
-);
-
-CREATE TABLE `Album_Song` (
-  `id`       int,
-  `song_id`  int,
-  `album_id` int,
-  PRIMARY KEY (`id`)
+CREATE TABLE IF NOT EXISTS Genre_Song(
+   GENRE_ID      INTEGER,
+   SONG_ID       INTEGER
 );
