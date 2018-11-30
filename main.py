@@ -1,11 +1,10 @@
-import sqlite3
-import re
 import os
-import pygame
+import re
+import sqlite3
 import urllib.request
-import eyed3
 from tkinter.filedialog import askdirectory
-from song import Song
+
+import eyed3
 
 qry = open("db/musicaly.sql").read()
 conn = sqlite3.connect('db/musicaly.db')
@@ -16,24 +15,24 @@ os.chdir(directory)
 
 for files in os.listdir(directory):
     if files.endswith(".mp3"):
-        #get the real path of the song
+        # get the real path of the song
         path = os.path.realpath(files)
 
-        #load the song
+        # load the song
         audio = eyed3.load(path)
 
-        #print the the name of the artist
+        # print the the name of the artist
         print(audio.tag.artist)
         artist = str(audio.tag.artist)
         artist = artist.lower()
         artist = artist.replace(" ", "")
 
-        #print the the title of the song
+        # print the the title of the song
         print(audio.tag.title)
         song = str(audio.tag.title).replace(".mp3", "").lower()
         song = re.sub('[^0-9a-zA-Z]+', '', song)
 
-        #to get the lyrics of the song from azlyrics
+        # to get the lyrics of the song from azlyrics
         url = "http://www.azlyrics.com/lyrics/" + artist + "/" + song + ".html"
         text = urllib.request.urlopen(url)
         lyrics = text.read()
@@ -58,5 +57,3 @@ for files in os.listdir(directory):
 
         # sng = Song(audio.tag.track_num)
         # sng.save_song(name=audio.tag.artist)
-
-
