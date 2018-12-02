@@ -34,10 +34,19 @@ class Album:
             songs.append(new_song)
         return songs
 
+    @staticmethod
+    def get_all_albums():
+        conn = sqlite3.connect('db/musicaly.db')
+        s = conn.execute("""SELECT id from Album""")
+        ids = s.fetchall()
+        albums = []
+        for i in ids:
+            new_album = Album(i[0])
+            new_album.load()
+            albums.append(new_album)
+        return albums
+
 
 if __name__ == '__main__':
-    a0 = Album(0)
-    # a0.save("dua lipa", 17)
-    a0.load()
-    for i in a0.get_songs():
+    for i in Album.get_all_albums():
         print(i)
