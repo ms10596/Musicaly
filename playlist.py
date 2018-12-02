@@ -5,7 +5,7 @@ class Playlist:
     def __init__(self, id):
         self.id = id
         self.name = None
-        self.describtion = None
+        self.description = None
         self.playlist_song_id = None
 
     def load(self):
@@ -13,7 +13,7 @@ class Playlist:
         s = conn.execute("""SELECT * FROM Playlist where id ={} """.format(self.id))
         result = s.fetchall()
         self.name = result[1]
-        self.describtion = result[2]
+        self.description = result[2]
         self.playlist_song_id = result[3]
 
     def save(self, name="", describtion="", playlist_song_id=""):

@@ -44,9 +44,9 @@ class Song:
             self.get_album()) + "\nRelease date: " + str(self.release_date) + "\nGenres: " + str(self.get_genre())
 
     def get_featured(self):
-        print(self.ft_type)
+        # print(self.ft_type)
         if self.ft_type == "artist":
-            print(self.ft_id)
+            # print(self.ft_id)
             artist = Artist(self.ft_id)
             artist.load()
             return artist
@@ -83,10 +83,13 @@ class Song:
     def get_genre(self):
         conn = sqlite3.connect('db/musicaly.db')
         s = conn.execute("SELECT genre_id from Genre_Song WHERE song_id ={}".format(self.id))
-        genre_id = s.fetchall()[0][0]
-        g = Genre(genre_id)
-        g.load()
-        return g
+        genre_id = s.fetchall()
+        genres = []
+        for i in genre_id:
+            new_genre = Genre(i[0])
+            new_genre.load()
+            genres.append(new_genre.name)
+        return genres
 
 
 if __name__ == '__main__':
