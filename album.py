@@ -22,9 +22,22 @@ class Album:
     def __str__(self):
         return str(self.title) + " " + str(self.songs_no)
 
+    def get_songs(self):
+        from song import Song
+        conn = sqlite3.connect('db/musicaly.db')
+        s = conn.execute("""SELECT song_id FROM Album_Song where album_id ={} """.format(self.id))
+        songs_id = s.fetchall()
+        songs = []
+        for i in songs_id:
+            new_song = Song(i[0])
+            new_song.load()
+            songs.append(new_song)
+        return songs
+
 
 if __name__ == '__main__':
     a0 = Album(0)
     # a0.save("dua lipa", 17)
     a0.load()
-    print(a0)
+    for i in a0.get_songs():
+        print(i)

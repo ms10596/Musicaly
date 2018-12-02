@@ -18,7 +18,7 @@ class Song:
         self.artist_type = None
         self.ft_type = None
 
-    def load_song(self):
+    def load(self):
         conn = sqlite3.connect('db/musicaly.db')
         s = conn.execute("SELECT * FROM Song where id = {}".format(self.id))
         result = s.fetchall()
@@ -31,7 +31,7 @@ class Song:
         self.ft_type = result[0][8]
         self.ft_id = result[0][9]
 
-    def save_song(self, name="", release_date="", lyrics="", length=""):
+    def save(self, name="", release_date="", lyrics="", length=""):
         conn = sqlite3.connect('db/musicaly.db')
         params = (self.id, name, release_date, lyrics, length)
         conn.execute("INSERT INTO Song (id,name, release_date, lyrics, length) VALUES (?,?, ?, ?, ?)", params)
