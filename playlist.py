@@ -13,12 +13,13 @@ class Playlist:
         conn = sqlite3.connect('db/musicaly.db')
         s = conn.execute("""SELECT * FROM Playlist where id ={} """.format(self.id))
         result = s.fetchall()
-        self.name = result[1]
-        self.description = result[2]
+        # print(result)
+        self.name = result[0][1]
+        self.description = result[0][2]
 
     def save(self, name="", describtion="", playlist_song_id=""):
         conn = sqlite3.connect('db/musicaly.db')
-        conn.execute("""INSERT INTO Playlist VALUES(?, ?, ?, ?)""", (self.id, name, describtion, playlist_song_id))
+        conn.execute("""INSERT INTO Playlist VALUES(?, ?, ?)""", (self.id, name, describtion))
         conn.commit()
 
     def get_songs(self):
@@ -31,6 +32,9 @@ class Playlist:
             new_song.load()
             songs.append(new_song)
         return songs
+
+    def __str__(self):
+        return self.name + '\n' + self.description + '\n' + str([(i.name, i.length) for i in self.get_songs()])
 
     @staticmethod
     def get_all_playlist():
@@ -47,5 +51,6 @@ class Playlist:
 
 if __name__ == '__main__':
     x = Playlist(0)
+    # x.save("sad", "sad when I am sad")
     x.load()
-    x.get_songs()
+    print(x)
