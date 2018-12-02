@@ -27,6 +27,18 @@ class Artist:
     def __str__(self):
         return str(self.name) + " " + str(self.dob)
 
+    def get_songs(self):
+        from song import Song
+        conn = sqlite3.connect('db/musicaly.db')
+        s = conn.execute("""SELECT id FROM Song where artist_id ={} OR ft_id={}""".format(self.id, self.id))
+        songs_id = s.fetchall()
+        songs = []
+        for i in songs_id:
+            new_song = Song(i[0])
+            new_song.load()
+            songs.append(new_song)
+        return songs
+
     @staticmethod
     def get_all_artists():
         conn = sqlite3.connect('db/musicaly.db')
