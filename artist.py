@@ -27,10 +27,19 @@ class Artist:
     def __str__(self):
         return str(self.name) + " " + str(self.dob)
 
+    @staticmethod
+    def get_all_artists():
+        conn = sqlite3.connect('db/musicaly.db')
+        s = conn.execute("""SELECT id FROM Artist""")
+        ids = s.fetchall()
+        artists = []
+        for i in ids:
+            new_artist = Artist(i[0])
+            new_artist.load()
+            artists.append(new_artist)
+        return artists
+
 
 if __name__ == '__main__':
-    a0 = Artist(0)
-    print(a0.load())
-    print(a0)
-    # a0.save("dua lipa", "22/8/1995")
-    # print(a0)
+    for i in Artist.get_all_artists():
+        print(i)
