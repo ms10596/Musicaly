@@ -7,8 +7,8 @@ from genre import Genre
 
 
 class Song:
-    def __init__(self, id):
-        self.id = id
+    def __init__(self):
+        self.id = None
         self.name = None
         self.release_date = None
         self.lyrics = None
@@ -32,9 +32,9 @@ class Song:
         self.ft_id = result[0][9]
 
     def save(self, name="", release_date="", lyrics="", length=""):
-        conn = sqlite3.connect('db/musicaly.db')
-        params = (self.id, name, release_date, lyrics, length)
-        conn.execute("INSERT INTO Song (id, name, release_date, lyrics, length) VALUES (?, ?, ?, ?, ?)", params)
+        conn = sqlite3.connect('../db/musicaly.db')
+        params = (name, release_date, lyrics, length)
+        conn.execute("INSERT INTO Song (name, release_date, lyrics, length) VALUES (?, ?, ?, ?)", params)
         conn.commit()
 
     def __str__(self):
