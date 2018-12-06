@@ -10,6 +10,7 @@ from tkinter.filedialog import askdirectory
 from playlist import *
 from song import *
 from album import *
+from artist import *
 
 # ----- connect to database -------
 qry = open("db/musicaly.sql").read()
@@ -24,17 +25,29 @@ playlists = playlist.get_all_playlist()
 album = Album()
 albums = album.get_all_albums()
 
+artist = Artist()
+artists = artist.get_all_artists()
+
+
 def playlist(playlists, list):
     list.delete(0, "end")
     for i in range(len(playlists)):
-        play = playlists[i].name + "      Tracks: " + str(playlists[i].numOfSongs)
+        play = "* " + playlists[i].name + "        Tracks : " + str(playlists[i].numOfSongs)
         list.insert("end", play)
+
 
 def album(albums, list):
     list.delete(0, "end")
     for i in range(len(albums)):
-        al = albums[i].title + "        Tracks: " + str(albums[i].songs_no)
+        al = "* " + albums[i].title + "        Tracks : " + str(albums[i].songs_no)
         list.insert("end", al)
+
+
+def artist(artists, list):
+    list.delete(0, "end")
+    for i in range(len(artists)):
+        art = "* " + artists[i].name
+        list.insert("end", art)
 
 
 root = tk.Tk()
@@ -49,7 +62,7 @@ button1 = tk.Button(leftFrame, text="Songs", fg="white", bg="Black", width=20)
 button2 = tk.Button(leftFrame, text="Albums", fg="white", bg="Black", width=20, command=lambda: album(albums, list))
 button3 = tk.Button(leftFrame, text="playlists", fg="white", bg="Black", width=20,
                     command=lambda: playlist(playlists, list))
-button4 = tk.Button(leftFrame, text="Artists", fg="white", bg="Black", width=20)
+button4 = tk.Button(leftFrame, text="Artists", fg="white", bg="Black", width=20, command=lambda: artist(artists, list))
 button5 = tk.Button(leftFrame, text="Bands", fg="white", bg="Black", width=20)
 button6 = tk.Button(leftFrame, text="genre", fg="white", bg="Black", width=20)
 
