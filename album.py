@@ -7,12 +7,12 @@ class Album:
         self.title = None
         self.songs_no = None
 
-    def load(self):
-        conn = sqlite3.connect('db/musicaly.db')
-        s = conn.execute("""SELECT * FROM Album where id ={} """.format(self.id))
-        result = s.fetchall()
-        self.title = result[0][1]
-        self.songs_no = result[0][2]
+    # def load(self):
+    #     conn = sqlite3.connect('db/musicaly.db')
+    #     s = conn.execute("""SELECT * FROM Album where id =? """, (self.id,))
+    #     result = s.fetchall()
+    #     self.title = result[0][1]
+    #     self.songs_no = result[0][2]
 
     def save(self, title="", song_no=""):
         conn = sqlite3.connect('db/musicaly.db')
@@ -25,7 +25,7 @@ class Album:
     def get_songs(self):
         from song import Song
         conn = sqlite3.connect('db/musicaly.db')
-        s = conn.execute("""SELECT song_id FROM Album_Song where album_id ={} """.format(self.id))
+        s = conn.execute("""SELECT song_id FROM Album_Song where album_id =? """, (self.id,))
         songs_id = s.fetchall()
         songs = []
         for i in songs_id:

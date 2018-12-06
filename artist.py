@@ -7,11 +7,10 @@ class Artist:
         self.name = None
         self.dob = None
 
-    def load(self):
+    def load(self, id):
         conn = sqlite3.connect('db/musicaly.db')
-        s = conn.execute("""SELECT * FROM Artist where id ={} """.format(self.id))
+        s = conn.execute("""SELECT * FROM Artist where id=? """, (id,))
         result = s.fetchall()
-        # print(result)
         if len(result) == 0:
             return "not found"
         self.name = result[0][1]
@@ -30,7 +29,7 @@ class Artist:
     def get_songs(self):
         from song import Song
         conn = sqlite3.connect('db/musicaly.db')
-        s = conn.execute("""SELECT id FROM Song where artist_id ={} OR ft_id={}""".format(self.id, self.id))
+        s = conn.execute("""SELECT id FROM Song where artist_id =? OR ft_id=?""", (self.id, self.id,))
         songs_id = s.fetchall()
         songs = []
         for i in songs_id:

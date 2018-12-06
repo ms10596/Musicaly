@@ -6,10 +6,12 @@ class Band:
         self.id = id
         self.name = None
 
-    def load(self):
+    def load(self, id):
         conn = sqlite3.connect('db/musicaly.db')
-        s = conn.execute("""SELECT * FROM Band where id ={} """.format(self.id))
+        s = conn.execute("""SELECT * FROM Band where id =? """, (id,))
         result = s.fetchall()
+        if len(result) == 0:
+            return "not found"
         self.name = result[0][1]
 
     def save(self, name=""):

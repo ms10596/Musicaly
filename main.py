@@ -28,11 +28,16 @@ albums = album.get_all_albums()
 artist = Artist()
 artists = artist.get_all_artists()
 
+song = Song()
+songs = song.get_all_songs()
+
 
 def playlist(playlists, list):
     list.delete(0, "end")
     for i in range(len(playlists)):
-        play = "* " + playlists[i].name + "        Tracks : " + str(playlists[i].numOfSongs)
+        space = 40-len(playlists[i].name)
+        print(len("* " + playlists[i].name + (" "*space)))
+        play = "* " + playlists[i].name + (" "*space) + "Tracks : " + str(playlists[i].numOfSongs)
         list.insert("end", play)
 
 
@@ -49,6 +54,32 @@ def artist(artists, list):
         art = "* " + artists[i].name
         list.insert("end", art)
 
+def song(songs, list):
+    list.delete(0, "end")
+    for i in range(len(songs)):
+        sg = "* " + songs[i].name
+        list.insert("end", sg)
+
+def songDes(song, list, des):
+    des.delete(0, "end")
+    name = str(list.get(list.curselection()))
+    name = name[2:]
+    sg = Song()
+    sg = sg.get_song_by_name(name)
+    des.insert("end", "Song : " + name)
+    des.insert("end", sg.artist_type + " : " + sg.get_artist().name)
+    if sg.ft_type == None:
+        des.insert("end", "Featured Artist : No")
+    else:
+        des.insert("end", "Featured " + sg.ft_type + " : " + sg.get_featured().name)
+    des.insert("end", "Album : " + sg.album)
+    des.insert("end", "Release date : " + str(sg.release_date))
+    genres = sg.get_genre()
+    genres = "".join(genres)
+    des.insert("end", "Genres : " + genres)
+
+
+
 
 root = tk.Tk()
 root.title("Musicaly")
@@ -56,9 +87,9 @@ root.geometry('800x600')
 root.configure(bg="black")
 
 leftFrame = tk.Frame(root, bg="black", height=600, width=25)
-leftFrame.grid(column=0, sticky="n")
+leftFrame.grid(row=0, column=0, sticky="n")
 
-button1 = tk.Button(leftFrame, text="Songs", fg="white", bg="Black", width=20)
+button1 = tk.Button(leftFrame, text="Songs", fg="white", bg="Black", width=20, command=lambda: song(songs, list))
 button2 = tk.Button(leftFrame, text="Albums", fg="white", bg="Black", width=20, command=lambda: album(albums, list))
 button3 = tk.Button(leftFrame, text="playlists", fg="white", bg="Black", width=20,
                     command=lambda: playlist(playlists, list))
@@ -79,8 +110,14 @@ separator.grid(row=0, column=1)
 rightFrame = tk.Frame(root, bg="black", width=400)
 rightFrame.grid(row=0, column=2)
 
+descriptionButt = tk.Button(rightFrame, text="description", fg="white", bg="black", width=15, command=lambda : songDes(song, list, desList))
+descriptionButt.grid(row=0, column=0, sticky="w", padx=10, pady=5)
+
+desList = tk.Listbox(rightFrame, height=10, width=50)
+desList.grid(row=0, column=0, padx=10, pady=5, sticky="e")
+
 list = tk.Listbox(rightFrame, height=25, width=70)
-list.grid(row=0, column=0, padx=10, pady=5, sticky="n")
+list.grid(row=1, column=0, padx=10, pady=5, sticky="n")
 
 root.mainloop()
 
