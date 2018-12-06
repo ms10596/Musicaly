@@ -2,8 +2,8 @@ import sqlite3
 
 
 class Album:
-    def __init__(self, id):
-        self.id = id
+    def __init__(self):
+        self.id = None
         self.title = None
         self.songs_no = None
 
@@ -37,12 +37,14 @@ class Album:
     @staticmethod
     def get_all_albums():
         conn = sqlite3.connect('db/musicaly.db')
-        s = conn.execute("""SELECT id from Album""")
-        ids = s.fetchall()
+        s = conn.execute("""SELECT * from Album""")
+        result = s.fetchall()
         albums = []
-        for i in ids:
-            new_album = Album(i[0])
-            new_album.load()
+        for i in range(len(result)):
+            new_album = Album()
+            new_album.id = result[i][0]
+            new_album.title = result[i][1]
+            new_album.songs_no = result[i][2]
             albums.append(new_album)
         return albums
 
