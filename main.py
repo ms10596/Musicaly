@@ -100,8 +100,6 @@ def addPlaylist():
         addwindow.title("Add new playlist")
         addwindow.geometry('250x150')
         addwindow.configure(bg = "black")
-        name = tk.StringVar()
-        description = tk.StringVar()
 
         lbl1 = tk.Label(addwindow, text = "Name", fg = "white", bg = "black").grid(row = 0, column = 0)
         lbl2 = tk.Label(addwindow, text = "Description", fg = "white", bg = "black").grid(row = 1, column = 0)
@@ -153,10 +151,12 @@ descriptionButt = tk.Button(rightFrame, text="description", fg="white", bg="blac
                             command=lambda: description(list, desList))
 descriptionButt.grid(row=0, column=0, sticky="w", padx=10, pady=5)
 
-desList = tk.Listbox(rightFrame, height=10, width=50)
+addPlaylistbtn = tk.Button(rightFrame, text = "Add Playlist", fg = "white", bg = "black", width = 15,
+        command = addPlaylist).grid(row = 0, column = 1)
+desList = tk.Listbox(rightFrame, height=10, width=50, bg = "black", fg = "white")
 desList.grid(row=0, column=0, padx=10, pady=5, sticky="e")
 
-list = tk.Listbox(rightFrame, height=25, width=70)
+list = tk.Listbox(rightFrame, height=25, width=70, bg = "black", fg = "white")
 list.grid(row=1, column=0, padx=10, pady=5, sticky="n")
 
 root.mainloop()
