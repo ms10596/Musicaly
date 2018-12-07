@@ -133,9 +133,11 @@ def addsongToplaylist():
         initialPlay = tk.StringVar()
         #print(playlis[0])
         initialPlay.set(playlis[0])
-        print(playlis, "\n")
+        #print(playlis, "\n")
         playlistmenu = tk.OptionMenu(addwindow, initialPlay, *playlis)
         playlistmenu.grid(row = 1, column = 1)
+        playlistmenu.config(font=('consolas',(12)), bg="black", width = 8)
+        
         pl = Playlist()
         addSongbtn = tk.Button(addwindow, text = "Add Song", fg= "white", bg = "black", 
         command = lambda: pl.addSongByName(initialPlay.get(), SongNamebox.get())).grid(row = 2, column = 1, pady = 5)
@@ -160,7 +162,7 @@ button3 = tk.Button(leftFrame, text="playlists", fg="white", bg="Black", width=2
 button4 = tk.Button(leftFrame, text="Artists", fg="white", bg="Black", width=20, command=lambda: artist(artists, list))
 button5 = tk.Button(leftFrame, text="Bands", fg="white", bg="Black", width=20)
 button6 = tk.Button(leftFrame, text="genre", fg="white", bg="Black", width=20)
-addsongToplaylist = tk.Button(leftFrame, text = "Add Songs to playlist", fg="white", bg="Black", width=20, command = addsongToplaylist)
+addsongToplaylist = tk.Button(leftFrame, text = "+Add Songs to playlist", fg="white", bg="Black", width=20, command = addsongToplaylist)
 button1.grid(row=0, padx=10, pady=5)
 button2.grid(row=1, padx=10, pady=5)
 button3.grid(row=2, padx=10, pady=5)
