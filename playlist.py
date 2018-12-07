@@ -12,7 +12,7 @@ class Playlist:
 
     def load(self):
         conn = sqlite3.connect('db/musicaly.db')
-        s = conn.execute("""SELECT * FROM Playlist where id ={} """.format(self.id))
+        s = conn.execute("""SELECT * FROM Playlist Where id""".format(self.id))
         result = s.fetchall()
         self.id = result[0][0]
         self.name = result[0][1]
@@ -36,6 +36,17 @@ class Playlist:
 
     def __str__(self):
         return self.name + '\n' + self.description + '\n' + str([(i.name, i.length) for i in self.get_songs()])
+    
+    def addSongByName(self, playlistname, songName):    #adding songs by name to playlist by name
+        conn = sqlite3.connect('db/musicaly.db')
+        song = conn.execute("SELECT ID FROM Song WHERE NAME=?", (songName,))
+        SongId = song.fetchone()
+        play = conn.execute("SELECT ID FROM Playlist WHERE NAME=?", (playlistname,))
+        playID = play.fetchone()
+        #print(playID, SongId)
+        conn.execute("INSERT INTO Playlist_Song VALUES(?, ?)", (playID[0], SongId[0],))
+        conn.commit()
+    
 
     def get_list_by_name(self, name):
         conn = conn = sqlite3.connect('db/musicaly.db')
@@ -66,7 +77,10 @@ class Playlist:
 
 
 if __name__ == '__main__':
-    x = Playlist(0)
-    # x.save("sad", "sad when I am sad")
+    x = Playlist()
     x.load()
     print(x)
+    #x.save("sad", "sad when I am sad")
+    x.addSongByName("sucidal", "Garden")
+    #x.load()
+    #print(x)
