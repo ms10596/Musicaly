@@ -2,17 +2,17 @@ import sqlite3
 
 
 class Album:
-    def __init__(self, id):
-        self.id = id
+    def __init__(self):
+        self.id = None
         self.title = None
         self.songs_no = None
 
-    def load(self):
-        conn = sqlite3.connect('db/musicaly.db')
-        s = conn.execute("""SELECT * FROM Album where id ={} """.format(self.id))
-        result = s.fetchall()
-        self.title = result[0][1]
-        self.songs_no = result[0][2]
+    # def load(self):
+    #     conn = sqlite3.connect('db/musicaly.db')
+    #     s = conn.execute("""SELECT * FROM Album where id =? """, (self.id,))
+    #     result = s.fetchall()
+    #     self.title = result[0][1]
+    #     self.songs_no = result[0][2]
 
     def save(self, title="", song_no=""):
         conn = sqlite3.connect('db/musicaly.db')
@@ -25,7 +25,7 @@ class Album:
     def get_songs(self):
         from song import Song
         conn = sqlite3.connect('db/musicaly.db')
-        s = conn.execute("""SELECT song_id FROM Album_Song where album_id ={} """.format(self.id))
+        s = conn.execute("""SELECT song_id FROM Album_Song where album_id =? """, (self.id,))
         songs_id = s.fetchall()
         songs = []
         for i in songs_id:
@@ -37,12 +37,14 @@ class Album:
     @staticmethod
     def get_all_albums():
         conn = sqlite3.connect('db/musicaly.db')
-        s = conn.execute("""SELECT id from Album""")
-        ids = s.fetchall()
+        s = conn.execute("""SELECT * from Album""")
+        result = s.fetchall()
         albums = []
-        for i in ids:
-            new_album = Album(i[0])
-            new_album.load()
+        for i in range(len(result)):
+            new_album = Album()
+            new_album.id = result[i][0]
+            new_album.title = result[i][1]
+            new_album.songs_no = result[i][2]
             albums.append(new_album)
         return albums
 

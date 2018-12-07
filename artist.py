@@ -2,16 +2,15 @@ import sqlite3
 
 
 class Artist:
-    def __init__(self, id):
-        self.id = id
+    def __init__(self):
+        self.id = None
         self.name = None
         self.dob = None
 
-    def load(self):
+    def load(self, id):
         conn = sqlite3.connect('db/musicaly.db')
-        s = conn.execute("""SELECT * FROM Artist where id ={} """.format(self.id))
+        s = conn.execute("""SELECT * FROM Artist where id=? """, (id,))
         result = s.fetchall()
-        # print(result)
         if len(result) == 0:
             return "not found"
         self.name = result[0][1]
@@ -30,7 +29,7 @@ class Artist:
     def get_songs(self):
         from song import Song
         conn = sqlite3.connect('db/musicaly.db')
-        s = conn.execute("""SELECT id FROM Song where artist_id ={} OR ft_id={}""".format(self.id, self.id))
+        s = conn.execute("""SELECT id FROM Song where artist_id =? OR ft_id=?""", (self.id, self.id,))
         songs_id = s.fetchall()
         songs = []
         for i in songs_id:
@@ -42,12 +41,14 @@ class Artist:
     @staticmethod
     def get_all_artists():
         conn = sqlite3.connect('db/musicaly.db')
-        s = conn.execute("""SELECT id FROM Artist""")
-        ids = s.fetchall()
+        s = conn.execute("""SELECT * FROM Artist""")
+        result = s.fetchall()
         artists = []
-        for i in ids:
-            new_artist = Artist(i[0])
-            new_artist.load()
+        for i in range(len(result)):
+            new_artist = Artist()
+            new_artist.id = result[i][0]
+            new_artist.name = result[i][1]
+            new_artist.dob = result[i][2]
             artists.append(new_artist)
         return artists
 

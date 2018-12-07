@@ -19,6 +19,7 @@ conn = sqlite3.connect('db/musicaly.db')
 conn.executescript(qry)
 
 # ------------- GUI ---------------
+
 playlist = Playlist()
 playlists = playlist.get_all_playlist()
 
@@ -119,8 +120,6 @@ def addPlaylist():
         savebutton = tk.Button(addwindow, text = "Add playlist", fg= "white", bg = "black", 
         command = lambda: newplaylist.save(namebox.get(), descriptionbox.get())).grid(row = 2, column = 1, pady = 5)
         
-
-
 root = tk.Tk()
 root.title("Musicaly")
 root.geometry('800x600')
@@ -154,13 +153,10 @@ descriptionButt = tk.Button(rightFrame, text="description", fg="white", bg="blac
                             command=lambda: description(list, desList))
 descriptionButt.grid(row=0, column=0, sticky="w", padx=10, pady=5)
 
-addsplaylistbutton = tk.Button(rightFrame, text="Add Playlist", fg="white", bg = "black", width = 15, command=lambda: addPlaylist())
-addsplaylistbutton.grid(row = 0, column = 1, sticky="e")
-
-desList = tk.Listbox(rightFrame, height=10, width=50, bg = "black", fg = "white")
+desList = tk.Listbox(rightFrame, height=10, width=50)
 desList.grid(row=0, column=0, padx=10, pady=5, sticky="e")
 
-list = tk.Listbox(rightFrame, height=25, width=70, bg = "black", fg = "white")
+list = tk.Listbox(rightFrame, height=25, width=70)
 list.grid(row=1, column=0, padx=10, pady=5, sticky="n")
 
 root.mainloop()
@@ -218,4 +214,3 @@ root.mainloop()
 #         sng = Song()
 #         title = str(audio.tag.title).replace(".mp3", "")
 #         sng.save(name=title, release_date="2017", lyrics=lyrics, length=audio.info.time_secs)
-

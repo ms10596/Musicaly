@@ -2,13 +2,13 @@ import sqlite3
 
 
 class Genre:
-    def __init__(self, id):
-        self.id = id
+    def __init__(self):
+        self.id = None
         self.name = None
 
-    def load(self):
+    def load(self, id):
         conn = sqlite3.connect('db/musicaly.db')
-        s = conn.execute("""SELECT * FROM Genre where id ={} """.format(self.id))
+        s = conn.execute("""SELECT * FROM Genre where ID = ?""", (id,))
         result = s.fetchall()
         self.name = result[0][1]
 
