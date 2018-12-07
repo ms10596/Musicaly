@@ -98,7 +98,7 @@ def description(list, des):
 def addPlaylist():
         addwindow = tk.Tk()
         addwindow.title("Add new playlist")
-        addwindow.geometry('250x150')
+        addwindow.geometry('250x100')
         addwindow.configure(bg = "black")
 
         lbl1 = tk.Label(addwindow, text = "Name", fg = "white", bg = "black").grid(row = 0, column = 0)
@@ -117,7 +117,34 @@ def addPlaylist():
         #newplaylist.save(name, description)
         savebutton = tk.Button(addwindow, text = "Add playlist", fg= "white", bg = "black", 
         command = lambda: newplaylist.save(namebox.get(), descriptionbox.get())).grid(row = 2, column = 1, pady = 5)
-        
+        addwindow.mainloop()
+def addsongToplaylist():
+        playlis = []
+        for i in range(len(playlists)):
+                playlis.append(playlists[i].name)
+        addwindow = tk.Tk()
+        addwindow.title("Add song to playlist")
+        addwindow.geometry('250x100')
+        addwindow.configure(bg = "black")
+        lbl1 = tk.Label(addwindow, text = "Song Name", fg = "white", bg = "black").grid(row = 0, column = 0)
+        SongNamebox = tk.Entry(addwindow)
+        SongNamebox.grid(row = 0, column = 1)
+        lbl2 = tk.Label(addwindow, text = "Playlist:", fg = "white", bg = "black").grid(row = 1, column = 0)
+        initialPlay = tk.StringVar()
+        #print(playlis[0])
+        initialPlay.set(playlis[0])
+        print(playlis, "\n")
+        playlistmenu = tk.OptionMenu(addwindow, initialPlay, *playlis)
+        playlistmenu.grid(row = 1, column = 1)
+        pl = Playlist()
+        addSongbtn = tk.Button(addwindow, text = "Add Song", fg= "white", bg = "black", 
+        command = lambda: pl.addSongByName(initialPlay.get(), SongNamebox.get())).grid(row = 2, column = 1, pady = 5)
+        #pl.addSongByName(var, songName.get())
+        addwindow.mainloop
+
+
+
+
 root = tk.Tk()
 root.title("Musicaly")
 root.geometry('800x600')
@@ -133,13 +160,14 @@ button3 = tk.Button(leftFrame, text="playlists", fg="white", bg="Black", width=2
 button4 = tk.Button(leftFrame, text="Artists", fg="white", bg="Black", width=20, command=lambda: artist(artists, list))
 button5 = tk.Button(leftFrame, text="Bands", fg="white", bg="Black", width=20)
 button6 = tk.Button(leftFrame, text="genre", fg="white", bg="Black", width=20)
-
+addsongToplaylist = tk.Button(leftFrame, text = "Add Songs to playlist", fg="white", bg="Black", width=20, command = addsongToplaylist)
 button1.grid(row=0, padx=10, pady=5)
 button2.grid(row=1, padx=10, pady=5)
 button3.grid(row=2, padx=10, pady=5)
 button4.grid(row=3, padx=10, pady=5)
 button5.grid(row=4, padx=10, pady=5)
 button6.grid(row=5, padx=10, pady=5)
+addsongToplaylist.grid(row = 6, padx=10, pady=5)
 
 separator = tk.Frame(root, bg="white", width=3, height=600)
 separator.grid(row=0, column=1)
@@ -151,7 +179,7 @@ descriptionButt = tk.Button(rightFrame, text="description", fg="white", bg="blac
                             command=lambda: description(list, desList))
 descriptionButt.grid(row=0, column=0, sticky="w", padx=10, pady=5)
 
-addPlaylistbtn = tk.Button(rightFrame, text = "Add Playlist", fg = "white", bg = "black", width = 15,
+addPlaylistbtn = tk.Button(rightFrame, text = "+Add Playlist", fg = "white", bg = "black", width = 15,
         command = addPlaylist).grid(row = 0, column = 1)
 desList = tk.Listbox(rightFrame, height=10, width=50, bg = "black", fg = "white")
 desList.grid(row=0, column=0, padx=10, pady=5, sticky="e")
