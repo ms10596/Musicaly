@@ -4,8 +4,8 @@ from song import Song
 
 
 class Playlist:
-    def __init__(self, id):
-        self.id = id
+    def __init__(self):
+        self.id = None
         self.name = None
         self.description = None
 
@@ -17,7 +17,7 @@ class Playlist:
         self.name = result[0][1]
         self.description = result[0][2]
 
-    def save(self, name="", describtion="", playlist_song_id=""):
+    def save(self, name="", describtion=""):   #Playlist_song_id deleted as a parameter
         conn = sqlite3.connect('db/musicaly.db')
         conn.execute("""INSERT INTO Playlist VALUES(?, ?, ?)""", (self.id, name, describtion))
         conn.commit()
