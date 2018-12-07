@@ -20,9 +20,9 @@ class Song:
         self.ft_type = None
         self.genre = []
 
-    def load(self):
+    def load(self, id):
         conn = sqlite3.connect('db/musicaly.db')
-        s = conn.execute("SELECT * FROM Song where id = {}".format(self.id))
+        s = conn.execute("SELECT * FROM Song where ID = ?", (id,))
         result = s.fetchall()
         self.name = result[0][1]
         self.release_date = result[0][2]

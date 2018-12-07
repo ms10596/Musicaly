@@ -11,6 +11,7 @@ from playlist import *
 from song import *
 from album import *
 from artist import *
+import datetime
 
 # ----- connect to database -------
 qry = open("db/musicaly.sql").read()
@@ -34,10 +35,10 @@ songs = song.get_all_songs()
 
 def playlist(playlists, list):
     list.delete(0, "end")
+    list.insert("end", "Playlists")
     for i in range(len(playlists)):
-        space = 40-len(playlists[i].name)
-        print(len("* " + playlists[i].name + (" "*space)))
-        play = "* " + playlists[i].name + (" "*space) + "Tracks : " + str(playlists[i].numOfSongs)
+        space = 40 - len(playlists[i].name)
+        play = "* " + playlists[i].name + (" " * space) + "Tracks : " + str(playlists[i].numOfSongs)
         list.insert("end", play)
 
 
@@ -54,31 +55,45 @@ def artist(artists, list):
         art = "* " + artists[i].name
         list.insert("end", art)
 
+
 def song(songs, list):
     list.delete(0, "end")
+    list.insert("end", "Songs")
     for i in range(len(songs)):
         sg = "* " + songs[i].name
         list.insert("end", sg)
 
-def songDes(song, list, des):
+
+def description(list, des):
     des.delete(0, "end")
-    name = str(list.get(list.curselection()))
-    name = name[2:]
-    sg = Song()
-    sg = sg.get_song_by_name(name)
-    des.insert("end", "Song : " + name)
-    des.insert("end", sg.artist_type + " : " + sg.get_artist().name)
-    if sg.ft_type == None:
-        des.insert("end", "Featured Artist : No")
-    else:
-        des.insert("end", "Featured " + sg.ft_type + " : " + sg.get_featured().name)
-    des.insert("end", "Album : " + sg.album)
-    des.insert("end", "Release date : " + str(sg.release_date))
-    genres = sg.get_genre()
-    genres = "".join(genres)
-    des.insert("end", "Genres : " + genres)
-
-
+    if list.get(0) == "Songs":
+        name = str(list.get(list.curselection()))
+        name = name[2:]
+        sg = Song()
+        sg = sg.get_song_by_name(name)
+        des.insert("end", "Song : " + name)
+        des.insert("end", sg.artist_type + " : " + sg.get_artist().name)
+        if sg.ft_type == None:
+            des.insert("end", "Featured Artist : No")
+        else:
+            des.insert("end", "Featured " + sg.ft_type + " : " + sg.get_featured().name)
+        des.insert("end", "Album : " + sg.album)
+        des.insert("end", "Release date : " + str(sg.release_date))
+        genres = sg.get_genre()
+        genres = "".join(genres)
+        des.insert("end", "Genres : " + genres)
+    elif list.get(0) == "Playlists":
+        name = str(list.get(list.curselection()))
+        n = name.split(" ")
+        name = n[1] + " " + n[2]
+        pl = Playlist()
+        pl = pl.get_list_by_name(name)
+        des.insert("end", pl.name)
+        des.insert("end", "  " + pl.description)
+        songs = pl.get_songs()
+        for i in range(len(songs)):
+            des.insert("end",
+                       songs[i].name + (" " * 10) + "Duration : " + str(datetime.timedelta(seconds=songs[i].length)))
 
 
 root = tk.Tk()
@@ -110,7 +125,8 @@ separator.grid(row=0, column=1)
 rightFrame = tk.Frame(root, bg="black", width=400)
 rightFrame.grid(row=0, column=2)
 
-descriptionButt = tk.Button(rightFrame, text="description", fg="white", bg="black", width=15, command=lambda : songDes(song, list, desList))
+descriptionButt = tk.Button(rightFrame, text="description", fg="white", bg="black", width=15,
+                            command=lambda: description(list, desList))
 descriptionButt.grid(row=0, column=0, sticky="w", padx=10, pady=5)
 
 desList = tk.Listbox(rightFrame, height=10, width=50)

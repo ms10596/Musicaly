@@ -25,17 +25,27 @@ class Playlist:
 
     def get_songs(self):
         conn = sqlite3.connect('db/musicaly.db')
-        s = conn.execute("""SELECT song_id FROM Playlist_Song WHERE playlist_id={}""".format(self.id))
+        s = conn.execute("""SELECT SONG_ID FROM Playlist_Song WHERE PLAYLIST_ID=?""", (self.id,))
         ids = s.fetchall()
         songs = []
         for i in ids:
-            new_song = Song(i[0])
-            new_song.load()
+            new_song = Song()
+            new_song.load(i[0])
             songs.append(new_song)
         return songs
 
     def __str__(self):
         return self.name + '\n' + self.description + '\n' + str([(i.name, i.length) for i in self.get_songs()])
+
+    def get_list_by_name(self, name):
+        conn = conn = sqlite3.connect('db/musicaly.db')
+        s = conn.execute("SELECT * FROM Playlist WHERE NAME=?", (name,))
+        result = s.fetchall()
+        playlist = Playlist()
+        playlist.id = result[0][0]
+        playlist.name = result[0][1]
+        playlist.description = result[0][2]
+        return playlist
 
     @staticmethod
     def get_all_playlist():
