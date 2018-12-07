@@ -50,7 +50,7 @@ class Playlist:
 
 
 if __name__ == '__main__':
-    x = Playlist(0)
-    # x.save("sad", "sad when I am sad")
-    x.load()
-    print(x)
+    x = Playlist(1)
+    x.save("suicidal", "when you have a suicidal thoughts")
+    #x.load()
+    #print(x)

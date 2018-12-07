@@ -4,41 +4,45 @@ import sqlite3
 import urllib.request
 import tkinter as tk
 from tkinter.filedialog import askdirectory
-
+from song import Song
+from playlist import Playlist
 import eyed3
+
+
 
 qry = open("db/musicaly.sql").read()
 conn = sqlite3.connect('db/musicaly.db')
 conn.executescript(qry)
 
-#directory = askdirectory()
-#os.chdir(directory)
+directory = askdirectory()
+os.chdir(directory)
 def window():
     root = tk.Tk()
     root.title("Musicaly")
-    root.geometry('600x400')
+    root.geometry('400x300')
     root.configure(bg="black")
 
-    topFrame = tk.Frame(root, bg =  "")
-    topFrame.grid(row = 0)
     leftFrame = tk.Frame(root, bg = "black")
-    leftFrame.grid(row = 3)
+    leftFrame.grid(row = 0)
 
-    appName = tk.Label(topFrame, text = "Musicaly", bg = "black", fg = "white")
-    appName.grid(column = 4)
-
-
-    button1 = tk.Button(leftFrame, text = "Playlists", fg = "white", bg = "Black", width=20)
+    lab = tk.Label(root, text = showplaylists(), bg = "Black", fg = "white")
+    lab.grid(row = 0, column =  2)
+    button1 = tk.Button(leftFrame, text = "Playlists", fg = "white", bg = "Black", width=20, command=showplaylists)
     button2 = tk.Button(leftFrame, text = "Albums", fg = "white", bg = "Black", width=20)
     button3 = tk.Button(leftFrame, text = "Artists", fg = "white", bg = "Black", width=20)
 
-    button1.grid(row = 1, ipadx = 10, pady= 5)
+    button1.grid(row = 1, ipadx = 10, pady= 5, sticky=tk.NSEW)
     button2.grid(row = 2, ipadx = 10, pady= 5)
     button3.grid(row = 3, ipadx = 10, pady= 5)
 
+
     root.mainloop()
 
-window()
+
+def main():
+
+
+
 for files in os.listdir(directory):
     if files.endswith(".mp3"):
         # get the real path of the song
@@ -56,7 +60,7 @@ for files in os.listdir(directory):
         # print the the title of the song
         print(audio.tag.title)
         song = str(audio.tag.title).replace(".mp3", "").lower()
-        song = tkinter.re.sub('[^0-9a-zA-Z]+', '', song)
+        song = tk.re.sub('[^0-9a-zA-Z]+', '', song)
 
         # to get the lyrics of the song from azlyrics
         url = "http://www.azlyrics.com/lyrics/" + artist + "/" + song + ".html"
