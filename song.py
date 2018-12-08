@@ -1,6 +1,5 @@
 import sqlite3
 
-from album import Album
 from artist import Artist
 from band import Band
 from genre import Genre
@@ -18,12 +17,14 @@ class Song:
         self.ft_id = None
         self.artist_type = None
         self.ft_type = None
+        self.path = None
         self.genre = []
 
     def load(self, id):
         conn = sqlite3.connect('db/musicaly.db')
         s = conn.execute("SELECT * FROM Song where ID = ?", (id,))
         result = s.fetchall()
+        self.id = result[0][0]
         self.name = result[0][1]
         self.release_date = result[0][2]
         self.lyrics = result[0][3]
@@ -31,14 +32,17 @@ class Song:
         self.album = result[0][5]
         self.artist_id = result[0][6]
         self.artist_type = result[0][7]
-        self.ft_type = result[0][8]
-        self.ft_id = result[0][9]
+        self.ft_id = result[0][8]
+        self.ft_type = result[0][9]
+        self.path = result[0][10]
 
-    def save(self, name="", release_date="", lyrics="", length=""):
+
+    def save(self, name="", release_date="", lyrics="", length="", path=""):
         conn = sqlite3.connect('../db/musicaly.db')
-        params = (name, release_date, lyrics, length)
-        conn.execute("INSERT INTO Song (name, release_date, lyrics, length) VALUES (?, ?, ?, ?)", params)
+        params = (name, release_date, lyrics, length, path)
+        conn.execute("INSERT INTO Song (name, release_date, lyrics, length, path) VALUES (?, ?, ?, ?, ?)", params)
         conn.commit()
+
 
     # def __str__(self):
     #     return "Song: " + self.name + "\nBand/Artist: " + str(
@@ -105,6 +109,7 @@ class Song:
         song.artist_type = result[0][7]
         song.ft_id = result[0][8]
         song.ft_type = result[0][9]
+        song.path = result[0][10]
         return song
 
     def get_all_songs(self):

@@ -1,17 +1,21 @@
-import os
-import inspect
+import os, time
 import re
 import eyed3
 import sqlite3
 import urllib.request
 import tkinter as tk
-from tkinter import ttk
 from tkinter.filedialog import askdirectory
 from playlist import *
 from song import *
 from album import *
 from artist import *
 import datetime
+import pygame
+import ossaudiodev
+from playsound import playsound
+from subprocess import call
+from pydub import AudioSegment
+from pydub.playback import play
 
 # ----- connect to database -------
 qry = open("db/musicaly.sql").read()
@@ -44,6 +48,7 @@ def playlist(playlists, list):
 
 def album(albums, list):
     list.delete(0, "end")
+    list.insert("end", "Albums")
     for i in range(len(albums)):
         al = "* " + albums[i].title + "        Tracks : " + str(albums[i].songs_no)
         list.insert("end", al)
@@ -96,9 +101,65 @@ def description(list, des):
                        songs[i].name + (" " * 10) + "Duration : " + str(datetime.timedelta(seconds=songs[i].length)))
 
 
+def playAlbum(list):
+    if list.get(0) == "Albums":
+        title = str(list.get(list.curselection()))
+        n = title.split(" ")
+        title = n[1] + " " + n[2]
+        alb = Album()
+        alb = alb.get_album_by_title(title)
+        songs = alb.get_songs()
+        list.delete(0, "end")
+        list.insert("end", "Songs")
+        numOfSongs = len(songs)
+        title =title.replace(" ", "")
+        print("touch " + title + ".m3u")
+        os.system("touch " + title + ".m3u")
+        for i in range(numOfSongs):
+            list.insert("end", "* " + songs[i].name)
+            os.system("echo " + songs[i].path + " >> " + title + ".m3u")
+
+        os.system("play -q " + title + ".m3u &")
+        list.select_set(1)
+
+
+play = 0
+
+def plays(list):
+    if list.get(0) == "Songs":
+        name = str(list.get(list.curselection()))
+        name = name[2:]
+        sg = Song()
+        sg = sg.get_song_by_name(name)
+        os.system("killall play")
+        os.system("play -q \"" + sg.path + "\" &")
+
+        # e = eyed3.load(sg.path)
+        # freq = e.info.sample_freq
+        # pygame.mixer.pre_init(freq, -16, 2, 4096)
+        # pygame.mixer.init()
+        # pygame.mixer.music.load(sg.path)
+        # pygame.mixer.music.play()
+        # pygame.time.delay(1000)
+
+def pause():
+    os.system("killall play")
+
+def next(list):
+    current = list.curselection()[0]
+    list.select_clear(current)
+    list.select_set(current + 1)
+
+
+def previous(list):
+    current = list.curselection()[0]
+    list.select_clear(current)
+    list.select_set(current - 1)
+
+
 root = tk.Tk()
 root.title("Musicaly")
-root.geometry('800x600')
+root.geometry('800x520')
 root.configure(bg="black")
 
 leftFrame = tk.Frame(root, bg="black", height=600, width=25)
@@ -123,19 +184,34 @@ separator = tk.Frame(root, bg="white", width=3, height=600)
 separator.grid(row=0, column=1)
 
 rightFrame = tk.Frame(root, bg="black", width=400)
-rightFrame.grid(row=0, column=2)
+rightFrame.grid(row=0, column=2, sticky="n")
 
 descriptionButt = tk.Button(rightFrame, text="description", fg="white", bg="black", width=15,
                             command=lambda: description(list, desList))
-descriptionButt.grid(row=0, column=0, sticky="w", padx=10, pady=5)
+descriptionButt.grid(row=0, column=0, columnspan=2, sticky="w", padx=10, pady=5)
 
-desList = tk.Listbox(rightFrame, height=10, width=50)
-desList.grid(row=0, column=0, padx=10, pady=5, sticky="e")
+desList = tk.Listbox(rightFrame, height=10, width=48)
+desList.grid(row=0, column=2, columnspan=5, padx=10, pady=5, sticky="e")
 
-list = tk.Listbox(rightFrame, height=25, width=70)
-list.grid(row=1, column=0, padx=10, pady=5, sticky="n")
+list = tk.Listbox(rightFrame, height=18, width=70)
+list.grid(row=1, rowspan=4, columnspan=7, padx=10, pady=5, sticky="n")
+list.bind('<Double-1>', lambda x: playAlbum(list))
+
+prevSongButt = tk.Button(rightFrame, text="previous", fg="white", bg="black", width=5, command=lambda: previous(list))
+prevSongButt.grid(row=6, column=1, sticky="e")
+
+playSongButt = tk.Button(rightFrame, text="play", fg="white", bg="black", width=5, command=lambda: plays(list))
+playSongButt.grid(row=6, column=2, padx=3, sticky="e")
+
+pauseSongButt = tk.Button(rightFrame, text="pause", fg="white", bg="black", width=5, command=lambda: pause())
+pauseSongButt.grid(row=6, column=3, sticky="w")
+
+nextSongButt = tk.Button(rightFrame, text="next", fg="white", bg="black", width=5, command=lambda: next(list))
+nextSongButt.grid(row=6, column=4, sticky="w")
 
 root.mainloop()
+
+os.system("killall play")
 
 # directory = askdirectory()
 # directory = "/home/shehabeldeen/materials/concepts of programming/Musicaly/songs"
@@ -189,4 +265,4 @@ root.mainloop()
 #
 #         sng = Song()
 #         title = str(audio.tag.title).replace(".mp3", "")
-#         sng.save(name=title, release_date="2017", lyrics=lyrics, length=audio.info.time_secs)
+#         sng.save(name=title, release_date="2017", lyrics=lyrics, length=audio.info.time_secs, path=path)
