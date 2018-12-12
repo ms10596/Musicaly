@@ -9,59 +9,80 @@ from playlist import *
 from song import *
 from album import *
 from artist import *
+from band import *
+from genre import *
 import datetime
-import pygame
+
+# import pygame
 
 # ----- connect to database -------
 qry = open("db/musicaly.sql").read()
 conn = sqlite3.connect('db/musicaly.db')
 conn.executescript(qry)
 
+
 # ------------- GUI ---------------
 
-playlist = Playlist()
-playlists = playlist.get_all_playlist()
 
-album = Album()
-albums = album.get_all_albums()
-
-artist = Artist()
-artists = artist.get_all_artists()
-
-song = Song()
-songs = song.get_all_songs()
-
-
-def playlist(playlists, listbox):
+def playlist(listbox):
     listbox.delete(0, "end")
     listbox.insert("end", "Playlists")
+    playlist = Playlist()
+    playlists = playlist.get_all_playlist()
     for i in range(len(playlists)):
         space = 40 - len(playlists[i].name)
-        play = "* " + playlists[i].name + (" " * space) + "Tracks : " + str(playlists[i].numOfSongs)
+        play = "* " + playlists[i].name + "Tracks : ".rjust(space) + str(playlists[i].numOfSongs)
         listbox.insert("end", play)
 
 
-def album(albums, listbox):
+def album(listbox):
     listbox.delete(0, "end")
     listbox.insert("end", "Albums")
+    album = Album()
+    albums = album.get_all_albums()
     for i in range(len(albums)):
         al = "* " + albums[i].title + "        Tracks : " + str(albums[i].songs_no)
         listbox.insert("end", al)
 
 
-def artist(artists, listbox):
+def artist(listbox):
     listbox.delete(0, "end")
+    listbox.insert("end", "Artists")
+    artist = Artist()
+    artists = artist.get_all_artists()
     for i in range(len(artists)):
         art = "* " + artists[i].name
         listbox.insert("end", art)
 
 
-def song(songs, listbox):
+def song(listbox):
     listbox.delete(0, "end")
     listbox.insert("end", "Songs")
+    song = Song()
+    songs = song.get_all_songs()
     for i in range(len(songs)):
         sg = "* " + songs[i].name
         listbox.insert("end", sg)
+
+
+def band(listbox):
+    listbox.delete(0, "end")
+    listbox.insert("end", "Bands")
+    band = Band()
+    bands = band.get_all_bands()
+    for i in range(len(bands)):
+        bd = "* " + bands[i].name
+        listbox.insert("end", bd)
+
+
+def genre(listbox):
+    listbox.delete(0, "end")
+    listbox.insert("end", "Genres")
+    genre = Genre()
+    genres = genre.get_all_genres()
+    for i in range(len(genres)):
+        gn = "* " + genres[i].name
+        listbox.insert("end", gn)
 
 
 def description(listbox, des):
@@ -77,11 +98,17 @@ def description(listbox, des):
             des.insert("end", "Featured Artist : No")
         else:
             des.insert("end", "Featured " + sg.ft_type + " : " + sg.get_featured().name)
-        des.insert("end", "Album : " + sg.album)
+        if sg.album != None:
+            des.insert("end", "Album : " + sg.album)
         des.insert("end", "Release date : " + str(sg.release_date))
         genres = sg.get_genre()
-        genres = "".join(genres)
+        genres = ", ".join(genres)
         des.insert("end", "Genres : " + genres)
+        des.insert("end", "lyrics :")
+        des.insert("end", " ")
+        lyrics = str(sg.lyrics).split("\n")
+        for i in lyrics:
+            desList.insert("end", i)
     elif listbox.get(0) == "Playlists":
         name = str(listbox.get(listbox.curselection()))
         n = name.split(" ")
@@ -92,32 +119,136 @@ def description(listbox, des):
         des.insert("end", "  " + pl.description)
         songs = pl.get_songs()
         for i in range(len(songs)):
-            des.insert("end",
-                       songs[i].name + (" " * 10) + "Duration : " + str(datetime.timedelta(seconds=songs[i].length)))
+            space = 30 - len(songs[i].name)
+            sg = str(songs[i].name).ljust(len(songs[i].name) + space) + "Duration : " + str(
+                datetime.timedelta(seconds=songs[i].length))
+            des.insert("end", sg)
+
+
+def doubleclick(listbox):
+    if listbox.get(0) == "Albums":
+        playAlbum(listbox)
+    elif listbox.get(0) == "Bands":
+        playBand(listbox)
+    elif listbox.get(0) == "Artists":
+        playArtist(listbox)
+    elif listbox.get(0) == "Genres":
+        playGenre(listbox)
+    elif listbox.get(0) == "Playlists":
+        playPlaylist(listbox)
 
 
 def playAlbum(listbox):
-    if listbox.get(0) == "Albums":
-        title = str(listbox.get(listbox.curselection()))
-        n = title.split(" ")
-        title = n[1] + " " + n[2]
-        alb = Album()
-        alb = alb.get_album_by_title(title)
-        songs = alb.get_songs()
-        listbox.delete(0, "end")
-        listbox.insert("end", "Songs")
-        numOfSongs = len(songs)
-        title = title.replace(" ", "")
-        os.system("touch " + title + ".m3u")
-        listbox.insert("end", "* " + songs[0].name)
-        os.system("echo " + songs[0].path + " > " + title + ".m3u")
-        for i in range(1, numOfSongs, 1):
-            listbox.insert("end", "* " + songs[i].name)
-            os.system("echo " + songs[i].path + " >> " + title + ".m3u")
+    title = str(listbox.get(listbox.curselection()))
+    tr = title.find("Tracks")
+    title = title[2:tr]
+    title = title.strip()
+    alb = Album()
+    alb = alb.get_album_by_title(title)
+    songs = alb.get_songs()
+    listbox.delete(0, "end")
+    listbox.insert("end", "Songs")
+    numOfSongs = len(songs)
+    title = tk.re.sub('[^0-9a-zA-Z]+', '', title)
+    os.system("touch " + title + ".m3u")
+    listbox.insert("end", "* " + songs[0].name)
+    os.system("echo " + songs[0].path + " > " + title + ".m3u")
+    for i in range(1, numOfSongs, 1):
+        listbox.insert("end", "* " + songs[i].name)
+        os.system("echo " + songs[i].path + " >> " + title + ".m3u")
 
-        os.system("killall play")
-        os.system("play -q " + title + ".m3u &")
-        listbox.select_set(1)
+    os.system("killall play")
+    os.system("play -q " + title + ".m3u &")
+    listbox.select_set(1)
+
+
+def playBand(listbox):
+    name = str(listbox.get(listbox.curselection()))
+    name = name[2:]
+    band = Band()
+    band = band.get_band_by_name(name)
+    songs = band.get_songs()
+    numOfSongs = len(songs)
+    listbox.delete(0, "end")
+    listbox.insert("end", "Songs")
+    name = tk.re.sub('[^0-9a-zA-Z]+', '', name)
+    os.system("touch " + name + ".m3u")
+    listbox.insert("end", "* " + songs[0].name)
+    os.system("echo " + songs[0].path + " > " + name + ".m3u")
+    for i in range(1, numOfSongs, 1):
+        listbox.insert("end", "* " + songs[i].name)
+        os.system("echo " + songs[i].path + " >> " + name + ".m3u")
+
+    os.system("killall play")
+    os.system("play -q " + name + ".m3u &")
+    listbox.select_set(1)
+
+
+def playArtist(listbox):
+    name = str(listbox.get(listbox.curselection()))
+    name = name[2:]
+    artist = Artist()
+    artist = artist.get_artist_by_name(name)
+    songs = artist.get_songs()
+    numOfSongs = len(songs)
+    listbox.delete(0, "end")
+    listbox.insert("end", "Songs")
+    name = tk.re.sub('[^0-9a-zA-Z]+', '', name)
+    os.system("touch " + name + ".m3u")
+    listbox.insert("end", "* " + songs[0].name)
+    os.system("echo " + songs[0].path + " > " + name + ".m3u")
+    for i in range(1, numOfSongs, 1):
+        listbox.insert("end", "* " + songs[i].name)
+        os.system("echo " + songs[i].path + " >> " + name + ".m3u")
+
+    os.system("killall play")
+    os.system("play -q " + name + ".m3u &")
+    listbox.select_set(1)
+
+
+def playGenre(listbox):
+    name = str(listbox.get(listbox.curselection()))
+    name = name[2:]
+    genre = Genre()
+    genre = genre.get_genre_by_name(name)
+    songs = genre.get_songs()
+    numOfSongs = len(songs)
+    listbox.delete(0, "end")
+    listbox.insert("end", "Songs")
+    name = tk.re.sub('[^0-9a-zA-Z]+', '', name)
+    os.system("touch " + name + ".m3u")
+    listbox.insert("end", "* " + songs[0].name)
+    os.system("echo " + songs[0].path + " > " + name + ".m3u")
+    for i in range(1, numOfSongs, 1):
+        listbox.insert("end", "* " + songs[i].name)
+        os.system("echo " + songs[i].path + " >> " + name + ".m3u")
+
+    os.system("killall play")
+    os.system("play -q " + name + ".m3u &")
+    listbox.select_set(1)
+
+def playPlaylist(listbox):
+    name = str(listbox.get(listbox.curselection()))
+    tr = name.find("Tracks")
+    name = name[2:tr]
+    name = name.strip()
+    playlist = Playlist()
+    playlist = playlist.get_list_by_name(name)
+    songs =playlist.get_songs()
+    listbox.delete(0, "end")
+    listbox.insert("end", "Songs")
+    numOfSongs = len(songs)
+    name = tk.re.sub('[^0-9a-zA-Z]+', '', name)
+    os.system("touch " + name + ".m3u")
+    listbox.insert("end", "* " + songs[0].name)
+    os.system("echo " + songs[0].path + " > " + name + ".m3u")
+    for i in range(1, numOfSongs, 1):
+        listbox.insert("end", "* " + songs[i].name)
+        os.system("echo " + songs[i].path + " >> " + name + ".m3u")
+
+    os.system("killall play")
+    os.system("play -q " + name + ".m3u &")
+    listbox.select_set(1)
 
 
 def plays(listbox):
@@ -128,14 +259,6 @@ def plays(listbox):
         sg = sg.get_song_by_name(name)
         os.system("killall play")
         os.system("play -q \"" + sg.path + "\" &")
-
-        # e = eyed3.load(sg.path)
-        # freq = e.info.sample_freq
-        # pygame.mixer.pre_init(freq, -16, 2, 4096)
-        # pygame.mixer.init()
-        # pygame.mixer.music.load(sg.path)
-        # pygame.mixer.music.play()
-        # pygame.time.delay(1000)
 
 
 def pause():
@@ -166,14 +289,14 @@ root.configure(bg="black")
 leftFrame = tk.Frame(root, bg="black", height=600, width=25)
 leftFrame.grid(row=0, column=0, sticky="n")
 
-button1 = tk.Button(leftFrame, text="Songs", fg="white", bg="Black", width=20, command=lambda: song(songs, listbox))
-button2 = tk.Button(leftFrame, text="Albums", fg="white", bg="Black", width=20, command=lambda: album(albums, listbox))
+button1 = tk.Button(leftFrame, text="Songs", fg="white", bg="Black", width=20, command=lambda: song(listbox))
+button2 = tk.Button(leftFrame, text="Albums", fg="white", bg="Black", width=20, command=lambda: album(listbox))
 button3 = tk.Button(leftFrame, text="playlists", fg="white", bg="Black", width=20,
-                    command=lambda: playlist(playlists, listbox))
+                    command=lambda: playlist(listbox))
 button4 = tk.Button(leftFrame, text="Artists", fg="white", bg="Black", width=20,
-                    command=lambda: artist(artists, listbox))
-button5 = tk.Button(leftFrame, text="Bands", fg="white", bg="Black", width=20)
-button6 = tk.Button(leftFrame, text="genre", fg="white", bg="Black", width=20)
+                    command=lambda: artist(listbox))
+button5 = tk.Button(leftFrame, text="Bands", fg="white", bg="Black", width=20, command=lambda: band(listbox))
+button6 = tk.Button(leftFrame, text="genre", fg="white", bg="Black", width=20, command=lambda: genre(listbox))
 
 button1.grid(row=0, padx=10, pady=5)
 button2.grid(row=1, padx=10, pady=5)
@@ -197,7 +320,7 @@ desList.grid(row=0, column=2, columnspan=5, padx=10, pady=5, sticky="e")
 
 listbox = tk.Listbox(rightFrame, height=18, width=70)
 listbox.grid(row=1, rowspan=4, columnspan=7, padx=10, pady=5, sticky="n")
-listbox.bind('<Double-1>', lambda x: playAlbum(listbox))
+listbox.bind('<Double-1>', lambda x: doubleclick(listbox))
 
 prevSongButt = tk.Button(rightFrame, text="previous", fg="white", bg="black", width=5,
                          command=lambda: previous(listbox))
@@ -222,7 +345,7 @@ for files in os.listdir(directory):
         os.remove(files)
 
 # directory = askdirectory()
-# directory = "/home/shehabeldeen/materials/concepts of programming/Musicaly/songs"
+# # directory = "/home/shehabeldeen/materials/concepts of programming/Musicaly/songs"
 # os.chdir(directory)
 # for files in os.listdir(directory):
 #     if files.endswith(".mp3"):
@@ -246,15 +369,17 @@ for files in os.listdir(directory):
 #         # print(artist, song)
 #         # to get the lyrics of the song from azlyrics
 #         url = "http://www.azlyrics.com/lyrics/" + artist + "/" + song + ".html"
+#         lyrics = ""
 #         try:
 #             text = urllib.request.urlopen(url)
+#             lyrics = text.read()
 #         except:
 #             text = ""
 #             pass
-#         lyrics = text.read()
+#
 #         lyrics = str(lyrics)
 #         where_start = lyrics.find('<!-- Usage of azlyrics.com content by any third-party')
-#         start = where_start + 150
+#         start = where_start + 130
 #         where_end = lyrics.find('<!-- MxM banner -->')
 #         end = where_end - 32
 #         lyrics = lyrics[start:end].replace("<br>\\n", "\n")
@@ -273,4 +398,4 @@ for files in os.listdir(directory):
 #
 #         sng = Song()
 #         title = str(audio.tag.title).replace(".mp3", "")
-#         sng.save(name=title, release_date="2017", lyrics=lyrics, length=audio.info.time_secs, path=path)
+#         sng.save(name=title, release_date=audio.tag.release_date, lyrics=lyrics, length=audio.info.time_secs, path=path)

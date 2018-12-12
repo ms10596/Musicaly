@@ -38,7 +38,7 @@ class Song:
 
 
     def save(self, name="", release_date="", lyrics="", length="", path=""):
-        conn = sqlite3.connect('../db/musicaly.db')
+        conn = sqlite3.connect('/home/shehabeldeen/materials/concepts of programming/Musicaly/db/musicaly.db')
         params = (name, release_date, lyrics, length, path)
         conn.execute("INSERT INTO Song (name, release_date, lyrics, length, path) VALUES (?, ?, ?, ?, ?)", params)
         conn.commit()
