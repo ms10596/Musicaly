@@ -74,14 +74,6 @@ class Song:
         else:
             return "unknown"
 
-    # def get_album(self):
-    #     conn = sqlite3.connect('db/musicaly.db')
-    #     s = conn.execute("SELECT album_id FROM Album_Song WHERE song_id=?", (self.id,))
-    #     album_id = s.fetchall()[0][0]
-    #     # print(album_id)
-    #     album = Album()
-    #     album.load()
-    #     return album
 
     def get_genre(self):
         conn = sqlite3.connect('db/musicaly.db')
@@ -131,6 +123,7 @@ class Song:
             song.ft_type = result[i][9]
             songs.append(song)
         return songs
+
 
 
 if __name__ == '__main__':

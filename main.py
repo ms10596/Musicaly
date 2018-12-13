@@ -4,6 +4,7 @@ import eyed3
 import sqlite3
 import urllib.request
 import tkinter as tk
+from tkinter import ttk
 from tkinter.filedialog import askdirectory
 from playlist import *
 from song import *
@@ -227,6 +228,7 @@ def playGenre(listbox):
     os.system("play -q " + name + ".m3u &")
     listbox.select_set(1)
 
+
 def playPlaylist(listbox):
     name = str(listbox.get(listbox.curselection()))
     tr = name.find("Tracks")
@@ -234,7 +236,7 @@ def playPlaylist(listbox):
     name = name.strip()
     playlist = Playlist()
     playlist = playlist.get_list_by_name(name)
-    songs =playlist.get_songs()
+    songs = playlist.get_songs()
     listbox.delete(0, "end")
     listbox.insert("end", "Songs")
     numOfSongs = len(songs)
@@ -281,9 +283,68 @@ def previous(listbox):
     plays(listbox)
 
 
+def addPlaylist():
+    addwindow = tk.Tk()
+    addwindow.title("Add new playlist")
+    addwindow.geometry('250x100')
+    addwindow.configure(bg="black")
+
+    lbl1 = tk.Label(addwindow, text="Name", fg="white", bg="black").grid(row=0, column=0)
+    lbl2 = tk.Label(addwindow, text="Description", fg="white", bg="black").grid(row=1, column=0)
+
+    namebox = tk.Entry(addwindow)
+    descriptionbox = tk.Entry(addwindow)
+
+    namebox.focus()
+
+    namebox.grid(row=0, column=1)
+    descriptionbox.grid(row=1, column=1)
+
+    newplaylist = Playlist()
+
+    savebutton = tk.Button(addwindow, text="Add playlist", fg="white", bg="black",
+                           command=lambda: newplaylist.save(namebox.get(), descriptionbox.get()))
+    savebutton.grid(row=2, column=1, pady=5)
+
+    addwindow.mainloop()
+
+
+def addsongToplaylist(song_name):
+    playlist = Playlist()
+    playlists = playlist.get_all_playlist()
+    playlis = ()
+    for i in range(len(playlists)):
+        playlis = playlis + (playlists[i].name,)
+
+    addwindow = tk.Tk()
+    addwindow.title("Add song to playlist")
+    addwindow.geometry('250x70')
+    addwindow.configure(bg="black")
+    lbl1 = tk.Label(addwindow, text="Playlist:", fg="white", bg="black").grid(row=0, column=0)
+    playlistmenu = ttk.Combobox(addwindow, values=playlis)
+    playlistmenu.current(0)
+    playlistmenu.grid(row=0, column=1)
+
+    pl = Playlist()
+    addSongbtn = tk.Button(addwindow, text="Add Song", fg="white", bg="black",
+                           command=lambda: pl.addSongByName(playlistmenu.get(), song_name))
+    addSongbtn.grid(row=1, column=1)
+
+    addwindow.mainloop
+
+
+def popmenu(listbox, x_root, y_root):
+    song_name = listbox.get(listbox.curselection())
+    song_name = song_name[2:]
+    menu = tk.Menu(tearoff=0)
+    menu.add_command(label="Add to playlist", command=lambda: addsongToplaylist(song_name))
+    menu.tk_popup(x_root, y_root)
+
+
 root = tk.Tk()
 root.title("Musicaly")
-root.geometry('800x520')
+root.minsize(800, 520)
+root.maxsize(800, 520)
 root.configure(bg="black")
 
 leftFrame = tk.Frame(root, bg="black", height=600, width=25)
@@ -297,6 +358,9 @@ button4 = tk.Button(leftFrame, text="Artists", fg="white", bg="Black", width=20,
                     command=lambda: artist(listbox))
 button5 = tk.Button(leftFrame, text="Bands", fg="white", bg="Black", width=20, command=lambda: band(listbox))
 button6 = tk.Button(leftFrame, text="genre", fg="white", bg="Black", width=20, command=lambda: genre(listbox))
+button7 = tk.Button(leftFrame, text="Add playlist", fg="white", bg="Black", width=20, command=lambda: addPlaylist())
+button8 = tk.Button(leftFrame, text="Add song to playlist", fg="white", bg="Black", width=20,
+                    command=addsongToplaylist)
 
 button1.grid(row=0, padx=10, pady=5)
 button2.grid(row=1, padx=10, pady=5)
@@ -304,6 +368,8 @@ button3.grid(row=2, padx=10, pady=5)
 button4.grid(row=3, padx=10, pady=5)
 button5.grid(row=4, padx=10, pady=5)
 button6.grid(row=5, padx=10, pady=5)
+button7.grid(row=6, padx=10, pady=5)
+button8.grid(row=7, padx=10, pady=5)
 
 separator = tk.Frame(root, bg="white", width=3, height=600)
 separator.grid(row=0, column=1)
@@ -321,6 +387,7 @@ desList.grid(row=0, column=2, columnspan=5, padx=10, pady=5, sticky="e")
 listbox = tk.Listbox(rightFrame, height=18, width=70)
 listbox.grid(row=1, rowspan=4, columnspan=7, padx=10, pady=5, sticky="n")
 listbox.bind('<Double-1>', lambda x: doubleclick(listbox))
+listbox.bind('<Button-3>', lambda e: popmenu(listbox, e.x_root, e.y_root))
 
 prevSongButt = tk.Button(rightFrame, text="previous", fg="white", bg="black", width=5,
                          command=lambda: previous(listbox))
