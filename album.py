@@ -17,7 +17,7 @@ class Album:
 
     def save(self, title="", song_no=""):
         conn = sqlite3.connect('db/musicaly.db')
-        conn.execute("""INSERT INTO Album VALUES(?, ?, ?)""", (self.id, title, song_no))
+        conn.execute("""INSERT INTO Album(TITLE, SONGS_NO) VALUES(?, ?)""", (title, song_no,))
         conn.commit()
 
     def __str__(self):

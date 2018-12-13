@@ -354,13 +354,31 @@ def add_new_artist():
     bdbox.grid(row=1, column=1)
     namebox.focus()
     artist = Artist()
-    savebutton = tk.Button(addwindow, text="Add artist", fg="white", bg="black",
+    savebutton = tk.Button(addwindow, text="Add Artist", fg="white", bg="black",
                            command=lambda: artist.save(namebox.get(), bdbox.get()))
     savebutton.grid(row=2, column=1, padx=10, pady=5)
 
     addwindow.mainloop()
 
 
+def add_new_album():
+    addwindow = tk.Tk()
+    addwindow.title("Add new album")
+    addwindow.geometry('250x90')
+    addwindow.configure(bg="black")
+    lbl1 = tk.Label(addwindow, text="Title: ", fg="white", bg="black").grid(row=0, column=0)
+    lbl2 = tk.Label(addwindow, text="songs_no: ", fg="white", bg="black").grid(row=1, column=0)
+    title = tk.Entry(addwindow)
+    songs_no = tk.Entry(addwindow)
+    title.grid(row=0, column=1)
+    songs_no.grid(row=1, column=1)
+    title.focus()
+    album = Album()
+    savebutton = tk.Button(addwindow, text="Add Album", fg="white", bg="black",
+                           command=lambda: album.save(title.get(), songs_no.get()))
+    savebutton.grid(row=2, column=1, padx=10, pady=5)
+
+    addwindow.mainloop()
 
 
 root = tk.Tk()
@@ -381,8 +399,10 @@ button4 = tk.Button(leftFrame, text="Artists", fg="white", bg="Black", width=20,
 button5 = tk.Button(leftFrame, text="Bands", fg="white", bg="Black", width=20, command=lambda: band(listbox))
 button6 = tk.Button(leftFrame, text="genre", fg="white", bg="Black", width=20, command=lambda: genre(listbox))
 button7 = tk.Button(leftFrame, text="Add playlist", fg="white", bg="Black", width=20, command=lambda: addPlaylist())
-button8 = tk.Button(leftFrame, text="Add new Artist", fg="white", bg="Black", width=20,
+button8 = tk.Button(leftFrame, text="Add New Artist", fg="white", bg="Black", width=20,
                     command=add_new_artist)
+button9 = tk.Button(leftFrame, text="Add New Album", fg="white", bg="Black", width=20,
+                    command=add_new_album)
 
 button1.grid(row=0, padx=10, pady=5)
 button2.grid(row=1, padx=10, pady=5)
@@ -392,6 +412,7 @@ button5.grid(row=4, padx=10, pady=5)
 button6.grid(row=5, padx=10, pady=5)
 button7.grid(row=6, padx=10, pady=5)
 button8.grid(row=7, padx=10, pady=5)
+button9.grid(row=8, padx=10, pady=5)
 
 separator = tk.Frame(root, bg="white", width=3, height=600)
 separator.grid(row=0, column=1)
