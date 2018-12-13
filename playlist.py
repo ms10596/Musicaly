@@ -72,6 +72,15 @@ class Playlist:
         conn.execute("INSERT INTO Playlist_Song VALUES (?, ?)", (playID[0], SongId[0],))
         conn.commit()
 
+    def removeSong(self, playlistname, songName):
+        conn = sqlite3.connect('db/musicaly.db')
+        song = conn.execute("SELECT ID FROM Song WHERE NAME=?", (songName,))
+        SongId = song.fetchone()
+        play = conn.execute("SELECT ID FROM Playlist WHERE NAME=?", (playlistname,))
+        playID = play.fetchone()
+        conn.execute("""DELETE FROM Playlist_Song WHERE PLAYLIST_ID=? AND SONG_ID=?""", (playID[0], SongId[0],))
+        conn.commit()
+
 if __name__ == '__main__':
     x = Playlist(0)
     # x.save("sad", "sad when I am sad")

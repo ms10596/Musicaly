@@ -238,7 +238,7 @@ def playPlaylist(listbox):
     playlist = playlist.get_list_by_name(name)
     songs = playlist.get_songs()
     listbox.delete(0, "end")
-    listbox.insert("end", "Songs")
+    listbox.insert("end", "Songs of playlist : " + name)
     numOfSongs = len(songs)
     name = tk.re.sub('[^0-9a-zA-Z]+', '', name)
     os.system("touch " + name + ".m3u")
@@ -254,7 +254,7 @@ def playPlaylist(listbox):
 
 
 def plays(listbox):
-    if listbox.get(0) == "Songs":
+    if listbox.get(0) == "Songs" or str(listbox.get(0)).find("Songs of playlist") > -1:
         name = str(listbox.get(listbox.curselection()))
         name = name[2:]
         sg = Song()
@@ -329,16 +329,30 @@ def addsongToplaylist(song_name):
     addSongbtn = tk.Button(addwindow, text="Add Song", fg="white", bg="black",
                            command=lambda: pl.addSongByName(playlistmenu.get(), song_name))
     addSongbtn.grid(row=1, column=1, padx=10, pady=5)
+    addwindow.mainloop()
 
-    addwindow.mainloop
+
+def removeSong(playlist_name, song_name):
+    pl = Playlist()
+    pl.removeSong(playlist_name, song_name)
 
 
 def popmenu(listbox, x_root, y_root):
-    song_name = listbox.get(listbox.curselection())
-    song_name = song_name[2:]
-    menu = tk.Menu(tearoff=0)
-    menu.add_command(label="Add to playlist", command=lambda: addsongToplaylist(song_name))
-    menu.tk_popup(x_root, y_root)
+    if listbox.get(0) == "Songs":
+        song_name = listbox.get(listbox.curselection())
+        song_name = song_name[2:]
+        menu = tk.Menu(tearoff=0)
+        menu.add_command(label="Add to playlist", command=lambda: addsongToplaylist(song_name))
+        menu.tk_popup(x_root, y_root)
+
+    elif str(listbox.get(0)).find("Songs of playlist") > -1:
+        playlist_name = str(listbox.get(0)).split(" ")[4:]
+        playlist_name = " ".join(playlist_name)
+        song_name = listbox.get(listbox.curselection())
+        song_name = song_name[2:]
+        menu = tk.Menu(tearoff=0)
+        menu.add_command(label="remove song", command=lambda: removeSong(playlist_name, song_name))
+        menu.tk_popup(x_root, y_root)
 
 
 def add_new_artist():
