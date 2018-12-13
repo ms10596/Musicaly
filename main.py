@@ -94,7 +94,11 @@ def description(listbox, des):
         sg = Song()
         sg = sg.get_song_by_name(name)
         des.insert("end", "Song : " + name)
-        des.insert("end", sg.artist_type + " : " + sg.get_artist().name)
+        if sg.artist_type == "unknown" or sg.artist_type == None:
+            des.insert("end", "Artist : unknown")
+        else:
+            des.insert("end", sg.artist_type + " : " + sg.get_artist().name)
+
         if sg.ft_type == None:
             des.insert("end", "Featured Artist : No")
         else:
@@ -337,12 +341,33 @@ def removeSong(playlist_name, song_name):
     pl.removeSong(playlist_name, song_name)
 
 
+def removePlaylist(playlist_name):
+    pl = Playlist()
+    pl.removePlaylist(playlist_name)
+
+
+def deleteSong(song_name):
+    sg = Song()
+    sg.deleteSong(song_name)
+
+
+def deleteArtist(name):
+    artist = Artist()
+    artist.deleteArtist(name)
+
+
+def deleteAlbum(title):
+    album = Album()
+    album.deleteAlbum(title)
+
+
 def popmenu(listbox, x_root, y_root):
     if listbox.get(0) == "Songs":
         song_name = listbox.get(listbox.curselection())
         song_name = song_name[2:]
         menu = tk.Menu(tearoff=0)
         menu.add_command(label="Add to playlist", command=lambda: addsongToplaylist(song_name))
+        menu.add_command(label="delete song", command=lambda: deleteSong(song_name))
         menu.tk_popup(x_root, y_root)
 
     elif str(listbox.get(0)).find("Songs of playlist") > -1:
@@ -352,6 +377,31 @@ def popmenu(listbox, x_root, y_root):
         song_name = song_name[2:]
         menu = tk.Menu(tearoff=0)
         menu.add_command(label="remove song", command=lambda: removeSong(playlist_name, song_name))
+        menu.tk_popup(x_root, y_root)
+
+    elif listbox.get(0) == "Playlists":
+        playlist_name = str(listbox.get(listbox.curselection()))
+        tr = playlist_name.find("Tracks")
+        playlist_name = playlist_name[2:tr]
+        playlist_name = playlist_name.strip()
+        menu = tk.Menu(tearoff=0)
+        menu.add_command(label="remove playlist", command=lambda: removePlaylist(playlist_name))
+        menu.tk_popup(x_root, y_root)
+
+    elif listbox.get(0) == "Artists":
+        name = listbox.get(listbox.curselection())
+        name = name[2:]
+        menu = tk.Menu(tearoff=0)
+        menu.add_command(label="delete artist", command=lambda: deleteArtist(name))
+        menu.tk_popup(x_root, y_root)
+
+    elif listbox.get(0) == "Albums":
+        title = str(listbox.get(listbox.curselection()))
+        tr = title.find("Tracks")
+        title = title[2:tr]
+        title = title.strip()
+        menu = tk.Menu(tearoff=0)
+        menu.add_command(label="delete album", command=lambda: deleteAlbum(title))
         menu.tk_popup(x_root, y_root)
 
 

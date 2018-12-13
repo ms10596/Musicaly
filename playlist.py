@@ -81,6 +81,15 @@ class Playlist:
         conn.execute("""DELETE FROM Playlist_Song WHERE PLAYLIST_ID=? AND SONG_ID=?""", (playID[0], SongId[0],))
         conn.commit()
 
+    def removePlaylist(self, playlist_name):
+        conn = sqlite3.connect('db/musicaly.db')
+        play = conn.execute("SELECT ID FROM Playlist WHERE NAME=?", (playlist_name,))
+        playID = play.fetchone()
+        conn.execute("""DELETE FROM Playlist_Song WHERE PLAYLIST_ID=?""", (playID[0],))
+        conn.execute("""DELETE FROM Playlist WHERE ID=?""", (playID[0],))
+        conn.commit()
+        conn.close()
+
 if __name__ == '__main__':
     x = Playlist(0)
     # x.save("sad", "sad when I am sad")

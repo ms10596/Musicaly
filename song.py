@@ -124,7 +124,13 @@ class Song:
             songs.append(song)
         return songs
 
-
+    def deleteSong(self, song_name):
+        conn = sqlite3.connect('db/musicaly.db')
+        song = conn.execute("SELECT ID FROM Song WHERE NAME=?", (song_name,))
+        SongId = song.fetchone()
+        conn.execute("""DELETE FROM Song WHERE ID=?""", (SongId[0],))
+        conn.commit()
+        conn.close()
 
 if __name__ == '__main__':
     s1 = Song(1)

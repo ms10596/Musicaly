@@ -76,6 +76,16 @@ class Artist:
         return artists
 
 
+    def deleteArtist(self, name):
+        conn = sqlite3.connect('db/musicaly.db')
+        art = conn.execute("SELECT ID FROM Artist WHERE NAME=?", (name,))
+        artId = art.fetchone()
+        conn.execute("""DELETE FROM Artist WHERE ID=?""", (artId[0],))
+        conn.execute("""DELETE FROM Band_Artist WHERE ARTIST_ID=?""", (artId[0],))
+        conn.execute("""UPDATE Song Set ARTIST_ID = 'unknown', ARTIST_TYPE = 'unknown' WHERE ARTIST_TYPE='Artist' AND ARTIST_ID=?""", (artId[0],))
+        conn.commit()
+        conn.close()
+
 if __name__ == '__main__':
     for i in Artist.get_all_artists():
         print(i)

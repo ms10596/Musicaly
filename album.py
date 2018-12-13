@@ -59,6 +59,16 @@ class Album:
         return albums
 
 
+    def deleteAlbum(self, title):
+        conn = sqlite3.connect('db/musicaly.db')
+        alb = conn.execute("SELECT ID FROM Album WHERE TITLE=?", (title,))
+        albID = alb.fetchone()
+        conn.execute("""DELETE FROM Album WHERE ID=?""", (albID[0],))
+        conn.execute("""DELETE FROM Album_Song WHERE ALBUM_ID=?""", (albID[0],))
+        conn.execute("""UPDATE Song SET ALBUM = 'unknown' WHERE ALBUM = ?""", (title,))
+        conn.commit()
+        conn.close()
+
 if __name__ == '__main__':
     for i in Album.get_all_albums():
         print(i)
