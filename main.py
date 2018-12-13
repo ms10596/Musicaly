@@ -304,7 +304,7 @@ def addPlaylist():
 
     savebutton = tk.Button(addwindow, text="Add playlist", fg="white", bg="black",
                            command=lambda: newplaylist.save(namebox.get(), descriptionbox.get()))
-    savebutton.grid(row=2, column=1, pady=5)
+    savebutton.grid(row=2, column=1, pady=10)
 
     addwindow.mainloop()
 
@@ -323,12 +323,12 @@ def addsongToplaylist(song_name):
     lbl1 = tk.Label(addwindow, text="Playlist:", fg="white", bg="black").grid(row=0, column=0)
     playlistmenu = ttk.Combobox(addwindow, values=playlis)
     playlistmenu.current(0)
-    playlistmenu.grid(row=0, column=1)
+    playlistmenu.grid(row=0, column=1, padx=10, pady=5)
 
     pl = Playlist()
     addSongbtn = tk.Button(addwindow, text="Add Song", fg="white", bg="black",
                            command=lambda: pl.addSongByName(playlistmenu.get(), song_name))
-    addSongbtn.grid(row=1, column=1)
+    addSongbtn.grid(row=1, column=1, padx=10, pady=5)
 
     addwindow.mainloop
 
@@ -339,6 +339,28 @@ def popmenu(listbox, x_root, y_root):
     menu = tk.Menu(tearoff=0)
     menu.add_command(label="Add to playlist", command=lambda: addsongToplaylist(song_name))
     menu.tk_popup(x_root, y_root)
+
+
+def add_new_artist():
+    addwindow = tk.Tk()
+    addwindow.title("Add new artist")
+    addwindow.geometry('250x90')
+    addwindow.configure(bg="black")
+    lbl1 = tk.Label(addwindow, text="Name: ", fg="white", bg="black").grid(row=0, column=0)
+    lbl2 = tk.Label(addwindow, text="birthday", fg="white", bg="black").grid(row=1, column=0)
+    namebox = tk.Entry(addwindow)
+    bdbox = tk.Entry(addwindow)
+    namebox.grid(row=0, column=1)
+    bdbox.grid(row=1, column=1)
+    namebox.focus()
+    artist = Artist()
+    savebutton = tk.Button(addwindow, text="Add artist", fg="white", bg="black",
+                           command=lambda: artist.save(namebox.get(), bdbox.get()))
+    savebutton.grid(row=2, column=1, padx=10, pady=5)
+
+    addwindow.mainloop()
+
+
 
 
 root = tk.Tk()
@@ -359,8 +381,8 @@ button4 = tk.Button(leftFrame, text="Artists", fg="white", bg="Black", width=20,
 button5 = tk.Button(leftFrame, text="Bands", fg="white", bg="Black", width=20, command=lambda: band(listbox))
 button6 = tk.Button(leftFrame, text="genre", fg="white", bg="Black", width=20, command=lambda: genre(listbox))
 button7 = tk.Button(leftFrame, text="Add playlist", fg="white", bg="Black", width=20, command=lambda: addPlaylist())
-button8 = tk.Button(leftFrame, text="Add song to playlist", fg="white", bg="Black", width=20,
-                    command=addsongToplaylist)
+button8 = tk.Button(leftFrame, text="Add new Artist", fg="white", bg="Black", width=20,
+                    command=add_new_artist)
 
 button1.grid(row=0, padx=10, pady=5)
 button2.grid(row=1, padx=10, pady=5)

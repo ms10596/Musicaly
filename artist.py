@@ -17,9 +17,9 @@ class Artist:
         self.dob = result[0][2]
         conn.close()
 
-    def save(self, name="", dob="", band_id=""):
+    def save(self, name="", dob=""):
         conn = sqlite3.connect('db/musicaly.db')
-        conn.execute("""INSERT INTO Artist VALUES(?, ?, ?)""", (name, dob, band_id))
+        conn.execute("""INSERT INTO Artist(NAME, DOB) VALUES(?, ?)""", (name, dob,))
         conn.commit()
         conn.close()
 
